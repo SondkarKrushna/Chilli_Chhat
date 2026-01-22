@@ -2,7 +2,7 @@ import React from "react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
 import anjali from "../../public/Anjali.jpg";
-import ram from "../../public/ram.jpg";
+import ram from "../../public/Ram.jpg";
 import pankaj from "../../public/Pankaj.jpg";
 import shivani from "../../public/shivani.jpg";
 import ramesh from "../../public/Ramesh.jpg";
