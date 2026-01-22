@@ -1,12 +1,12 @@
 import React from "react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
-import anjali from "../../public/anjali.jpg";
+import anjali from "../../public/Anjali.jpg";
 import ram from "../../public/ram.jpg";
-import pankaj from "../../public/pankaj.jpg";
+import pankaj from "../../public/Pankaj.jpg";
 import shivani from "../../public/shivani.jpg";
-import ramesh from "../../public/ramesh.jpg";
-import sangita from "../../public/sangita.jpg";
+import ramesh from "../../public/Ramesh.jpg";
+import sangita from "../../public/Sangita.jpg";
 
 const testimonials = [
   {
