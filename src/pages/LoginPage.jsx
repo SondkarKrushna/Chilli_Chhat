@@ -4,33 +4,36 @@ import { FaUserTie, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLoginUserMutation } from "../store/api/loginApi";
 import background from "../../public/background.jpg";
 import mobileBg from "../../public/mobileBg.jpg";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/slices/authSlice";
+
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  // UI state
+  // ---------------- UI STATE ----------------
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  // Form state
+  // ---------------- FORM STATE ----------------
   const [formData, setFormData] = useState({
     role: "",
     email: "",
     password: "",
   });
 
-  // RTK Query mutation
-  const [loginUser, { isLoading, error, isSuccess }] =
-    useLoginUserMutation();
+  // ---------------- RTK QUERY ----------------
+  const [loginUser, { isLoading, error }] = useLoginUserMutation();
 
-  // Handle resize
+  // ---------------- HANDLE RESIZE ----------------
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle input change
+  // ---------------- HANDLE CHANGE ----------------
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -38,30 +41,27 @@ const LoginPage = () => {
     });
   };
 
-  // Submit handler
+  // ---------------- SUBMIT ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await loginUser(formData).unwrap();
 
-      // ✅ SINGLE SOURCE OF TRUTH
       const role = formData.role;
-
       localStorage.setItem("role", role);
 
       if (role === "waiter") {
         navigate("/waiter");
       } else if (role === "chef") {
         navigate("/chief");
-      } else {
-        navigate("/home");
+      } else if (role === "admin") {
+        navigate("/admin");
       }
     } catch (err) {
       console.error("Login failed:", err);
     }
   };
-
 
   return (
     <div
@@ -72,7 +72,7 @@ const LoginPage = () => {
     >
       <div className="w-full max-w-xs sm:max-w-md p-4 sm:p-8 bg-white rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg">
 
-        {/* Icon */}
+        {/* ICON */}
         <div className="flex justify-center mb-4">
           <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
             <FaUserTie size={isMobile ? 20 : 28} />
@@ -87,17 +87,17 @@ const LoginPage = () => {
           Please login to your account
         </p>
 
-        {/* Error */}
+        {/* ERROR */}
         {error && (
           <p className="text-red-600 text-sm text-center mb-3">
             {error?.data?.message || "Invalid credentials"}
           </p>
         )}
 
-        {/* Form */}
+        {/* FORM */}
         <form className="space-y-5" onSubmit={handleSubmit}>
 
-          {/* Role */}
+          {/* ROLE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Login As
@@ -114,11 +114,11 @@ const LoginPage = () => {
               </option>
               <option value="waiter">Waiter</option>
               <option value="chef">Chef</option>
-              <option value="user">User</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
 
-          {/* Email */}
+          {/* EMAIL */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -134,7 +134,7 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Password */}
+          {/* PASSWORD */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -158,7 +158,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Forgot password */}
+          {/* FORGOT PASSWORD */}
           <div className="text-right">
             <span
               className="text-sm text-indigo-600 hover:underline cursor-pointer"
@@ -168,7 +168,7 @@ const LoginPage = () => {
             </span>
           </div>
 
-          {/* Login Button */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
             disabled={isLoading}
@@ -178,10 +178,13 @@ const LoginPage = () => {
           </button>
         </form>
 
-        {/* Register */}
+        {/* REGISTER */}
         <div className="text-center mt-6 text-sm text-gray-600">
           New user?{" "}
-          <Link to="/register" className="text-indigo-600 hover:underline font-semibold">
+          <Link
+            to="/register"
+            className="text-indigo-600 hover:underline font-semibold"
+          >
             Register Now
           </Link>
         </div>

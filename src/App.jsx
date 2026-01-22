@@ -17,6 +17,7 @@ import MenuPage from "./pages/MenuData";
 import TableBooking from "./pages/BookTable";
 import Testimonials from "./components/Testimonials";
 import ForgotPassword from "./components/ForgotPassword";
+import AdminPanel from "./pages/AdminPannel";
 
 function App() {
   const location = useLocation();
@@ -50,7 +51,7 @@ function App() {
         <Route
           path="/book-table"
           element={
-            <ProtectedRoute allowedRoles={["user"]}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <TableBooking />
             </ProtectedRoute>
           }
@@ -72,6 +73,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["chef"]}>
               <ChefPannel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminPanel />
             </ProtectedRoute>
           }
         />

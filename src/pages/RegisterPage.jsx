@@ -101,7 +101,7 @@ const RegisterPage = () => {
             </option>
             <option value="waiter">Waiter</option>
             <option value="chef">Chef</option>
-            <option value="user">User</option>
+            <option value="admin">Admin</option>
           </select>
 
           <input

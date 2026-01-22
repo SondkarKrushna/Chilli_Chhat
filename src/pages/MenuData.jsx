@@ -1,180 +1,287 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import {
+  useGetItemsQuery,
+  useAddCategoryMutation,
+  useAddItemMutation,
+  useGetCategoriesQuery,
+} from "../store/api/menuApi";
 
 const MenuPage = () => {
-  const [menuData, setMenuData] = useState([
-    {
-      category: "Breakfast",
-      items: [
-        { id: 18, name: "Vada Pav", price: 12, desc: "Classic Mumbai snack" },
-        { id: 19, name: "Pohe", price: 15, desc: "Light breakfast dish" },
-        { id: 20, name: "Upma", price: 25, desc: "South Indian breakfast" },
-      ],
-    },
-    {
-      category: "Starters",
-      items: [
-        { id: 1, name: "Paneer Pakoda", price: 120, desc: "Crispy paneer fritters" },
-        { id: 2, name: "Veg Manchurian", price: 150, desc: "Indo-Chinese starter" },
-        { id: 3, name: "Masala Papad", price: 25, desc: "Papad with toppings" },
-      ],
-    },
-    {
-      category: "Soups",
-      items: [
-        { id: 16, name: "Tomato Soup", price: 60, desc: "Fresh tomato soup" },
-        { id: 17, name: "Spinach Soup", price: 80, desc: "Healthy spinach soup" },
-      ],
-    },
-    {
-      category: "Roti",
-      items: [
-        { id: 4, name: "Chapati", price: 12, desc: "Soft wheat roti" },
-        { id: 5, name: "Tandoori Roti", price: 15, desc: "Clay oven roti" },
-        { id: 6, name: "Butter Naan", price: 25, desc: "Buttery naan" },
-      ],
-    },
-    {
-      category: "Rice",
-      items: [
-        { id: 7, name: "Jeera Rice", price: 120, desc: "Cumin flavored rice" },
-        { id: 8, name: "Plain Rice", price: 100, desc: "Steamed rice" },
-      ],
-    },
-    {
-      category: "Dal",
-      items: [
-        { id: 9, name: "Dal Tadka", price: 140, desc: "Tempered dal" },
-        { id: 10, name: "Dal Fry", price: 130, desc: "Restaurant style dal" },
-      ],
-    },
-    {
-      category: "Paneer",
-      items: [
-        { id: 11, name: "Palak Paneer", price: 180, desc: "Paneer in spinach gravy" },
-        { id: 12, name: "Kaju Kari", price: 240, desc: "Cashew curry" },
-        { id: 13, name: "Paneer Maharaja", price: 260, desc: "Rich paneer dish" },
-      ],
-    },
-    {
-      category: "Desserts",
-      items: [
-        { id: 14, name: "Gulab Jamun", price: 60, desc: "Soft milk dessert" },
-        { id: 15, name: "Ice Cream", price: 80, desc: "Vanilla / Chocolate" },
-      ],
-    },
-    {
-      category: "Pizza",
-      items: [
-        { id: 21, name: "Onion Pizza", price: 150, desc: "Onion topping pizza" },
-        { id: 22, name: "Cheese Pizza", price: 150, desc: "Extra cheese pizza" },
-        { id: 23, name: "Margherita Pizza", price: 180, desc: "Classic pizza" },
-      ],
-    },
-  ]);
+  // 🔹 FETCH DISHES
+  const { data, isLoading, error } = useGetItemsQuery();
 
-  /* NEW ITEM STATE */
+  // 🔹 FETCH CATEGORIES (NEW)
+  const { data: categoriesData = [] } = useGetCategoriesQuery();
+
+  // ✅ HANDLE ANY API RESPONSE SHAPE
+  const menuData = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.data)
+      ? data.data
+      : [];
+
+  const categories = Array.isArray(categoriesData)
+    ? categoriesData
+    : Array.isArray(categoriesData?.data)
+      ? categoriesData.data
+      : [];
+  console.log("categories raw response:", categoriesData);
+  console.log("categories processed array length:", categories.length);
+  console.log("first category object (if exists):", categories[0]);
+  const [addCategoryApi] = useAddCategoryMutation();
+  const [addItemApi] = useAddItemMutation();
+
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [showItemForm, setShowItemForm] = useState(false);
+
+  const [newCategory, setNewCategory] = useState("");
   const [newItem, setNewItem] = useState({
-    category: "",
+    categoryId: "", // will store categoryId
     name: "",
     price: "",
-    desc: "",
+    // desc: "",
   });
 
-  /* ADD NEW ITEM FUNCTION */
-  const addNewItem = () => {
-    if (!newItem.category || !newItem.name || !newItem.price) {
-      alert("Please fill all required fields");
+  // ✅ GROUP ITEMS BY CATEGORY (FOR DISPLAY ONLY)
+  const groupedMenu = useMemo(() => {
+    const map = {};
+
+    for (const item of menuData) {
+      if (!item?.category) continue;
+
+      const categoryName =
+        typeof item.category === "string"
+          ? item.category
+          : item.category?.name;
+
+      if (!categoryName) continue;
+
+      if (!map[categoryName]) {
+        map[categoryName] = {
+          category: categoryName,
+          items: [],
+        };
+      }
+
+      map[categoryName].items.push(item);
+    }
+
+    return Object.values(map);
+  }, [menuData]);
+
+  // ✅ ADD CATEGORY
+  const addCategory = async () => {
+    if (!newCategory.trim()) return alert("Enter category name");
+
+    try {
+      await addCategoryApi({ name: newCategory }).unwrap();
+      setNewCategory("");
+      setShowCategoryForm(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add category");
+    }
+  };
+
+  // ✅ ADD MENU ITEM
+  // const addMenuItem = async () => {
+  //   if (!newItem.categoryId || !newItem.name || !newItem.price) {
+  //     return alert("Fill all required fields");
+  //   }
+
+  //   try {
+  //     await addItemApi({
+  //       category: newItem.categoryId, // ✅ categoryId
+  //       name: newItem.name,
+  //       price: Number(newItem.price),
+  //       // desc: newItem.desc,
+  //     }).unwrap();
+
+  //     setNewItem({ category: "", name: "", price: "", desc: "" });
+  //     setShowItemForm(false);
+  //   } catch (err) {
+  //     console.error("ADD ITEM ERROR:", err);
+  //     alert("Failed to add item");
+  //   }
+  // };
+  const addMenuItem = async () => {
+    if (!newItem.categoryId?.trim()) {
+      alert("Please select a category");
       return;
     }
 
-    setMenuData((prev) =>
-      prev.map((cat) =>
-        cat.category === newItem.category
-          ? {
-              ...cat,
-              items: [
-                ...cat.items,
-                {
-                  id: Date.now(),
-                  name: newItem.name,
-                  price: Number(newItem.price),
-                  desc: newItem.desc || "New item",
-                },
-              ],
-            }
-          : cat
-      )
-    );
+    if (!newItem.name?.trim()) {
+      alert("Item name is required");
+      return;
+    }
 
-    setNewItem({ category: "", name: "", price: "", desc: "" });
+    const priceNum = Number(newItem.price);
+    if (!newItem.price || isNaN(priceNum) || priceNum <= 0) {
+      alert("Please enter a valid price (> 0)");
+      return;
+    }
+
+    try {
+      console.log("→ Sending to backend:", {
+        category: newItem.categoryId,
+        name: newItem.name,
+        price: Number(newItem.price),
+      });
+      await addItemApi({
+        category: newItem.categoryId,
+        name: newItem.name.trim(),
+        price: priceNum,
+        // description: newItem.description?.trim() || undefined,
+      }).unwrap();
+
+      setNewItem({
+        categoryId: "",
+        name: "",
+        price: "",
+        // description: "",   
+      });
+
+      setShowItemForm(false);
+      alert("Item added successfully!");
+    } catch (err) {
+      console.error("ADD ITEM ERROR:", err);
+      // Better error message
+      const msg = err?.data?.message || err?.message || "Failed to add item";
+      alert(msg);
+    }
   };
+  // 🔄 STATES
+  if (isLoading) {
+    return (
+      <div className="text-center mt-20 text-xl font-semibold">
+        Loading Menu...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <pre className="text-red-600 p-6">
+        {JSON.stringify(error, null, 2)}
+      </pre>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <h1 className="text-4xl font-bold text-center text-red-600 mb-10">
+      <h1 className="text-4xl font-bold text-center text-red-600 mb-8">
         Our Menu
       </h1>
 
-      {/* ADD ITEM FORM */}
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow mb-12">
-        <h2 className="text-xl font-semibold mb-4">➕ Add New Menu Item</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <select
-            className="border rounded px-4 py-2"
-            value={newItem.category}
-            onChange={(e) =>
-              setNewItem({ ...newItem, category: e.target.value })
-            }
-          >
-            <option value="">Select Category</option>
-            {menuData.map((c) => (
-              <option key={c.category}>{c.category}</option>
-            ))}
-          </select>
-
-          <input
-            type="text"
-            placeholder="Item Name"
-            className="border rounded px-4 py-2"
-            value={newItem.name}
-            onChange={(e) =>
-              setNewItem({ ...newItem, name: e.target.value })
-            }
-          />
-
-          <input
-            type="number"
-            placeholder="Price"
-            className="border rounded px-4 py-2"
-            value={newItem.price}
-            onChange={(e) =>
-              setNewItem({ ...newItem, price: e.target.value })
-            }
-          />
-
-          <input
-            type="text"
-            placeholder="Description"
-            className="border rounded px-4 py-2"
-            value={newItem.desc}
-            onChange={(e) =>
-              setNewItem({ ...newItem, desc: e.target.value })
-            }
-          />
-        </div>
+      {/* ACTION BUTTONS */}
+      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
+        <button
+          onClick={() => {
+            setShowCategoryForm(!showCategoryForm);
+            setShowItemForm(false);
+          }}
+          className="bg-blue-600 text-white px-6 py-2 rounded"
+        >
+          Add Category
+        </button>
 
         <button
-          onClick={addNewItem}
-          className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          onClick={() => {
+            setShowItemForm(!showItemForm);
+            setShowCategoryForm(false);
+          }}
+          className="bg-green-600 text-white px-6 py-2 rounded"
         >
-          Add Item
+          Add Menu Item
         </button>
       </div>
 
+      {/* ADD CATEGORY FORM */}
+      {showCategoryForm && (
+        <div className="max-w-xl mx-auto bg-white p-6 rounded shadow mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            Add New Category
+          </h2>
+          <input
+            className="border w-full px-4 py-2 rounded mb-4"
+            placeholder="Category name"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+          <button
+            onClick={addCategory}
+            className="bg-blue-600 text-white px-6 py-2 rounded"
+          >
+            Add Category
+          </button>
+        </div>
+      )}
+
+      {/* ADD ITEM FORM */}
+      {showItemForm && (
+        <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow mb-10">
+          <h2 className="text-xl font-semibold mb-4">
+            Add New Menu Item
+          </h2>
+
+          <div className="grid grid-cols-1 bordersm:grid-cols-2 gap-4">
+            <select className="border rounded px-4 py-2"
+              value={newItem.categoryId}
+              onChange={(e) => setNewItem({ ...newItem, categoryId: e.target.value })}
+            >
+              <option value="">Select Category</option>
+
+              {categories.map((cat, index) => (
+                <option
+                  key={cat._id || cat.id || `cat-${index}`}
+                  value={cat._id || cat.id || ""}
+                >
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              className="border rounded px-4 py-2"
+              placeholder="Item name"
+              value={newItem.name}
+              onChange={(e) =>
+                setNewItem({ ...newItem, name: e.target.value })
+              }
+            />
+
+            <input
+              type="number"
+              className="border rounded px-4 py-2"
+              placeholder="Price"
+              value={newItem.price}
+              onChange={(e) =>
+                setNewItem({ ...newItem, price: e.target.value })
+              }
+            />
+
+            {/* <input
+              className="border rounded px-4 py-2"
+              placeholder="Description"
+              value={newItem.desc}
+              onChange={(e) =>
+                setNewItem({ ...newItem, desc: e.target.value })
+              }
+            /> */}
+          </div>
+
+          <button
+            onClick={addMenuItem}
+            className="mt-4 bg-green-600 text-white px-6 py-2 rounded"
+          >
+            Add Item
+          </button>
+        </div>
+      )}
+
       {/* MENU DISPLAY */}
       <div className="max-w-6xl mx-auto space-y-12">
-        {menuData.map((section) => (
+        {groupedMenu.map((section) => (
           <div key={section.category}>
             <h2 className="text-2xl font-semibold mb-6 border-l-4 border-red-500 pl-3">
               {section.category}
@@ -183,11 +290,19 @@ const MenuPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {section.items.map((item) => (
                 <div
-                  key={item.id}
-                  className="bg-white rounded-xl shadow-md p-5"
+                  key={item._id}
+                  className="bg-white p-5 rounded-xl shadow"
                 >
-                  <h3 className="text-xl font-semibold">{item.name}</h3>
-                  <p className="text-gray-500 text-sm">{item.desc}</p>
+                  <h3 className="text-xl font-semibold">
+                    {typeof item.name === "string"
+                      ? item.name
+                      : item.name?.name}
+                  </h3>
+                  <p className="text-gray-500 text-sm">
+                    {typeof item.desc === "string"
+                      ? item.desc
+                      : item.desc?.text}
+                  </p>
                   <p className="text-green-600 font-bold mt-2">
                     ₹{item.price}
                   </p>
@@ -202,4 +317,3 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
-  

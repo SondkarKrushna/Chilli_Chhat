@@ -1,0 +1,859 @@
+{
+  "info": {
+    "_postman_id": "66c9c0a2-75bb-4d61-beaa-948e7c63c505",
+    "name": "RestaurantV2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51112222",
+    "_collection_link": "https://go.postman.co/collection/51112222-66c9c0a2-75bb-4d61-beaa-948e7c63c505?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Category CRUD",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"chinese\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"chinese soup\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/categories/6970c212d17c74a1ec803dc9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories",
+                "6970c212d17c74a1ec803dc9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzA3MTI3YjY3NDdlYTVhOTY1NzkxYSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk3OTEzOSwiZXhwIjoxNzY5NTgzOTM5fQ.pK0vF2Z_glYALCKDpq4uK4Fi0sZSw55xhBx5xq4ellI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/categories/69707b3e1fd21c40a3f1ff52",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories",
+                "69707b3e1fd21c40a3f1ff52"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Regsister & Login",
+      "item": [
+        {
+          "name": "Regsister User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Mohit\",\r\n  \"email\": \"mohit@test.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"chef\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User Waiter",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"ram@test.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"waiter\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@test.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User Chef",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"mohit@test.com\",\r\n  \"password\": \"123456\",\r\n  \"role\": \"chef\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dish CRUD",
+      "item": [
+        {
+          "name": "Get Dishes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/dishes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dishes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Dish",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"jalebi\",\r\n  \"price\": 40,\r\n  \"category\": \"6970c1f3d17c74a1ec803dc3\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/dishes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dishes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dishes by Category",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/dishes/category/6970c1f3d17c74a1ec803dc3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dishes",
+                "category",
+                "6970c1f3d17c74a1ec803dc3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Dish",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"salad\",\r\n  \"price\": 20,\r\n  \"category\": \"697088679a7f2cbb8e79d2ef\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/dishes/6970888c9a7f2cbb8e79d2f9",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dishes",
+                "6970888c9a7f2cbb8e79d2f9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Dish",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"fish\",\r\n  \"price\": 50,\r\n  \"category\": \"697088679a7f2cbb8e79d2ef\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/dishes/697088e09a7f2cbb8e79d308",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dishes",
+                "697088e09a7f2cbb8e79d308"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Table CRUD",
+      "item": [
+        {
+          "name": "Create Table",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"tablE-5\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/tables",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "tables"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tables",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/tables",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "tables"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Table",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/tables/6970a0ae5c8231a2b9d0b2a7",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "tables",
+                "6970a0ae5c8231a2b9d0b2a7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Table",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Table-2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/tables/6970a0bc5c8231a2b9d0b2ad",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "tables",
+                "6970a0bc5c8231a2b9d0b2ad"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order CRUD",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTU2ZDE3Yzc0YTFlYzgwM2RiMSIsInJvbGUiOiJXQUlURVIiLCJpYXQiOjE3Njg5OTg1NTYsImV4cCI6MTc2OTYwMzM1Nn0.H16e89mB2LnWYsxiStvnb_NCwNCe_4xbPVILpuINxP0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"table\": \"6970c4afd17c74a1ec803e1b\",\r\n  \"items\": [\r\n    { \"dish\": \"6970c3cbd17c74a1ec803dfb\", \"quantity\": 2 },\r\n    { \"dish\": \"6970c300d17c74a1ec803dd3\", \"quantity\": 6 },\r\n    { \"dish\": \"6970c368d17c74a1ec803dec\", \"quantity\": 1 }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Prep & Ready",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTcxZDE3Yzc0YTFlYzgwM2RiNCIsInJvbGUiOiJDSEVGIiwiaWF0IjoxNzY4OTk4ODc5LCJleHAiOjE3Njk2MDM2Nzl9.flBhpypTaQQ6C56qqBftzYF4Rif088Lc4tiFi5noWVM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \r\n    \"status\": \"READY\" \r\n}\r\n\r\n// { \r\n//     \"status\": \"PREPARING\" \r\n// }\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders/6970c77cd17c74a1ec803e41/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders",
+                "6970c77cd17c74a1ec803e41",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Complete",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTU2ZDE3Yzc0YTFlYzgwM2RiMSIsInJvbGUiOiJXQUlURVIiLCJpYXQiOjE3Njg5OTg1NTYsImV4cCI6MTc2OTYwMzM1Nn0.H16e89mB2LnWYsxiStvnb_NCwNCe_4xbPVILpuINxP0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \r\n    \"status\": \"COMPLETED\" \r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders/6970c77cd17c74a1ec803e41/complete",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders",
+                "6970c77cd17c74a1ec803e41",
+                "complete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTQ0ZDE3Yzc0YTFlYzgwM2RhZSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2ODk5NzI3NywiZXhwIjoxNzY5NjAyMDc3fQ.HitzpAHnmHKS0k2F_ESwfu9ox1CjGWajBeYTJus8rDs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders Chef",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTcxZDE3Yzc0YTFlYzgwM2RiNCIsInJvbGUiOiJDSEVGIiwiaWF0IjoxNzY4OTk4ODc5LCJleHAiOjE3Njk2MDM2Nzl9.flBhpypTaQQ6C56qqBftzYF4Rif088Lc4tiFi5noWVM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/orders/chef",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders",
+                "chef"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders Waiter",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzBjMTU2ZDE3Yzc0YTFlYzgwM2RiMSIsInJvbGUiOiJXQUlURVIiLCJpYXQiOjE3Njg5OTg1NTYsImV4cCI6MTc2OTYwMzM1Nn0.H16e89mB2LnWYsxiStvnb_NCwNCe_4xbPVILpuINxP0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/orders/waiter",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders",
+                "waiter"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

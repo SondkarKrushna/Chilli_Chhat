@@ -7,7 +7,6 @@ const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ DEFINE ROLE HERE (THIS WAS MISSING)
   const role = localStorage.getItem("role");
 
   const navItemClass = ({ isActive }) =>
@@ -21,7 +20,7 @@ const NavBar = () => {
     <nav className="bg-[#FFF7ED] text-[#3F2A1D] shadow-sm sticky top-0 z-50 w-full border-b border-amber-100">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-        {/* Logo */}
+        {/* LOGO */}
         <NavLink to="/home" className="flex items-center gap-3">
           <img
             src={logo}
@@ -37,16 +36,9 @@ const NavBar = () => {
           </span>
         </NavLink>
 
-        {/* Desktop Menu */}
+        {/* DESKTOP MENU */}
         <ul className="hidden md:flex items-center gap-8 font-medium">
           <NavLink to="/menu" className={navItemClass}>Menu</NavLink>
-
-          {role === "user" && (
-            <NavLink to="/book-table" className={navItemClass}>
-              Book Table
-            </NavLink>
-          )}
-
           <NavLink to="/about" className={navItemClass}>About</NavLink>
           <NavLink to="/contact" className={navItemClass}>Contact</NavLink>
 
@@ -67,9 +59,18 @@ const NavBar = () => {
               Chef Panel
             </NavLink>
           )}
+
+          {role === "admin" && (
+            <NavLink
+              to="/admin"
+              className="px-4 py-1.5 rounded-full bg-amber-600 text-white hover:bg-amber-700 transition"
+            >
+              Admin Panel
+            </NavLink>
+          )}
         </ul>
 
-        {/* Mobile Button */}
+        {/* MOBILE TOGGLE */}
         <button
           className="md:hidden text-xl text-[#3F2A1D]"
           onClick={() => setOpen(!open)}
@@ -78,19 +79,12 @@ const NavBar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {open && (
         <div className="md:hidden bg-[#FFF7ED] px-6 py-4 border-t border-amber-100">
           <ul className="flex flex-col gap-4 font-medium">
             <NavLink to="/home" className={navItemClass} onClick={() => setOpen(false)}>Home</NavLink>
             <NavLink to="/menu" className={navItemClass} onClick={() => setOpen(false)}>Menu</NavLink>
-
-            {role === "user" && (
-              <NavLink to="/book-table" className={navItemClass} onClick={() => setOpen(false)}>
-                Book Table
-              </NavLink>
-            )}
-
             <NavLink to="/about" className={navItemClass} onClick={() => setOpen(false)}>About</NavLink>
             <NavLink to="/contact" className={navItemClass} onClick={() => setOpen(false)}>Contact</NavLink>
 
@@ -111,6 +105,16 @@ const NavBar = () => {
                 className="mt-2 text-center px-4 py-2 rounded-full bg-amber-600 text-white"
               >
                 Chef Panel
+              </NavLink>
+            )}
+
+            {role === "admin" && (
+              <NavLink
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="mt-2 text-center px-4 py-2 rounded-full bg-amber-600 text-white"
+              >
+                Admin Panel
               </NavLink>
             )}
           </ul>
