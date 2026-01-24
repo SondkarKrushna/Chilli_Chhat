@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../public/logo.png";
+import { useLogout } from "../store/slices/logout/logout";   
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const logout = useLogout();   
 
   const role = localStorage.getItem("role");
+  const isLoggedIn = !!localStorage.getItem("token");   
 
   const navItemClass = ({ isActive }) =>
     `cursor-pointer transition ${
-      isActive
-        ? "text-amber-600 font-semibold"
-        : "text-[#3F2A1D] hover:text-amber-600"
+      isActive ? "text-amber-600 font-semibold" : "text-[#3F2A1D] hover:text-amber-600"
     }`;
 
   return (
@@ -37,8 +38,7 @@ const NavBar = () => {
         </NavLink>
 
         {/* DESKTOP MENU */}
-        <ul className="hidden md:flex items-center gap-8 font-medium">
-          <NavLink to="/menu" className={navItemClass}>Menu</NavLink>
+        <div className="hidden md:flex items-center gap-8 font-medium">
           <NavLink to="/about" className={navItemClass}>About</NavLink>
           <NavLink to="/contact" className={navItemClass}>Contact</NavLink>
 
@@ -68,7 +68,17 @@ const NavBar = () => {
               Admin Panel
             </NavLink>
           )}
-        </ul>
+
+          {/* Logout – shown only when logged in */}
+          {isLoggedIn && (
+            <button
+              onClick={logout}
+              className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition font-medium"
+            >
+              Logout
+            </button>
+          )}
+        </div>
 
         {/* MOBILE TOGGLE */}
         <button
@@ -83,16 +93,18 @@ const NavBar = () => {
       {open && (
         <div className="md:hidden bg-[#FFF7ED] px-6 py-4 border-t border-amber-100">
           <ul className="flex flex-col gap-4 font-medium">
-            <NavLink to="/home" className={navItemClass} onClick={() => setOpen(false)}>Home</NavLink>
-            <NavLink to="/menu" className={navItemClass} onClick={() => setOpen(false)}>Menu</NavLink>
-            <NavLink to="/about" className={navItemClass} onClick={() => setOpen(false)}>About</NavLink>
-            <NavLink to="/contact" className={navItemClass} onClick={() => setOpen(false)}>Contact</NavLink>
+            <NavLink to="/about" className={navItemClass} onClick={() => setOpen(false)}>
+              About
+            </NavLink>
+            <NavLink to="/contact" className={navItemClass} onClick={() => setOpen(false)}>
+              Contact
+            </NavLink>
 
             {role === "waiter" && (
               <NavLink
                 to="/waiter"
                 onClick={() => setOpen(false)}
-                className="mt-2 text-center px-4 py-2 rounded-full bg-amber-600 text-white"
+                className="mt-2 text-center px-4 py-2.5 rounded-full bg-amber-600 text-white hover:bg-amber-700"
               >
                 Waiter Panel
               </NavLink>
@@ -102,7 +114,7 @@ const NavBar = () => {
               <NavLink
                 to="/chief"
                 onClick={() => setOpen(false)}
-                className="mt-2 text-center px-4 py-2 rounded-full bg-amber-600 text-white"
+                className="mt-2 text-center px-4 py-2.5 rounded-full bg-amber-600 text-white hover:bg-amber-700"
               >
                 Chef Panel
               </NavLink>
@@ -112,10 +124,23 @@ const NavBar = () => {
               <NavLink
                 to="/admin"
                 onClick={() => setOpen(false)}
-                className="mt-2 text-center px-4 py-2 rounded-full bg-amber-600 text-white"
+                className="mt-2 text-center px-4 py-2.5 rounded-full bg-amber-600 text-white hover:bg-amber-700"
               >
                 Admin Panel
               </NavLink>
+            )}
+
+            {/* Logout in mobile menu – shown only when logged in */}
+            {isLoggedIn && (
+              <button
+                onClick={() => {
+                  logout();
+                  setOpen(false);
+                }}
+                className="mt-3 text-center px-5 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 font-medium"
+              >
+                Logout
+              </button>
             )}
           </ul>
         </div>

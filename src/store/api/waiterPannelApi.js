@@ -4,17 +4,21 @@ const baseUrl = `${import.meta.env.VITE_BACKEND_URL}`;
 
 export const waiterPannelApi = createApi({
   reducerPath: "waiterPannelApi",
-  baseQuery: fetchBaseQuery({ baseUrl, credentials: "include", 
-    prepareHeaders: (headers, {getState}) =>{
-      const token = getState().auth.token;
+  baseQuery: fetchBaseQuery({
+    baseUrl,
+    credentials: "include",   
+    prepareHeaders: (headers) => {  
+      const token = localStorage.getItem("token");
+      console.log("token".token)
 
-      if(token) {
-        headers.set("authorization", `Bearer ${token}`);
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
       }
+
       return headers;
     },
-   }),
-  tagTypes: ["Orders"],   
+  }),
+  tagTypes: ["Orders"],
   endpoints: (builder) => ({
     addOrder: builder.mutation({
       query: (data) => ({

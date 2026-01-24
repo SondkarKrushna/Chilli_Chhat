@@ -247,8 +247,7 @@ const MenuPage = () => {
               value={newItem.name}
               onChange={(e) =>
                 setNewItem({ ...newItem, name: e.target.value })
-              }
-            />
+              }/>
 
             <input
               type="number"

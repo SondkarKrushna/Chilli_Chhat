@@ -12,28 +12,28 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ---------------- UI STATE ----------------
+  // UI STATE 
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  // ---------------- FORM STATE ----------------
+  // FORM STATE 
   const [formData, setFormData] = useState({
     role: "",
     email: "",
     password: "",
   });
 
-  // ---------------- RTK QUERY ----------------
+  // RTK QUERY
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
 
-  // ---------------- HANDLE RESIZE ----------------
+  // HANDLE RESIZE 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ---------------- HANDLE CHANGE ----------------
+  // HANDLE CHANGE
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -41,15 +41,18 @@ const LoginPage = () => {
     });
   };
 
-  // ---------------- SUBMIT ----------------
+  // SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await loginUser(formData).unwrap();
+      const resp = await loginUser(formData).unwrap();
+      console.log(resp);
 
       const role = formData.role;
       localStorage.setItem("role", role);
+      localStorage.setItem("token", resp.token);
+
 
       if (role === "waiter") {
         navigate("/waiter");
