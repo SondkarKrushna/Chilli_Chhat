@@ -9,58 +9,33 @@ import {
 } from "../store/api/menuApi";
 
 const MenuPage = () => {
-  // ── Data Fetching ────────────────────────────────────────
+  /* ===================== DATA ===================== */
   const { data, isLoading, error } = useGetItemsQuery();
   const { data: categoriesData = [] } = useGetCategoriesQuery();
 
-  // ── Mutations ────────────────────────────────────────────
-  const [addCategoryApi] = useAddCategoryMutation();
-  const [addItemApi] = useAddItemMutation();
-  const [removeCategoryApi, { isLoading: isRemovingCategory }] = useRemoveCategoryMutation();
-  const [removeMenuItemApi, { isLoading: isRemovingItem }] = useRemoveMenuItemMutation();
-
-  // ── Processed Data ───────────────────────────────────────
+  // Normalize items
   const menuData = Array.isArray(data)
     ? data
     : Array.isArray(data?.data)
-      ? data.data
-      : [];
+    ? data.data
+    : [];
 
+  // Normalize categories
   const categories = Array.isArray(categoriesData)
     ? categoriesData
     : Array.isArray(categoriesData?.data)
-      ? categoriesData.data
-      : [];
+    ? categoriesData.data
+    : [];
 
-  // ── Grouping items by category ───────────────────────────
-  const groupedMenu = useMemo(() => {
-    const map = {};
+  /* ===================== MUTATIONS ===================== */
+  const [addCategoryApi] = useAddCategoryMutation();
+  const [addItemApi] = useAddItemMutation();
+  const [removeCategoryApi, { isLoading: isRemovingCategory }] =
+    useRemoveCategoryMutation();
+  const [removeMenuItemApi, { isLoading: isRemovingItem }] =
+    useRemoveMenuItemMutation();
 
-    for (const item of menuData) {
-      if (!item?.category) continue;
-
-      const categoryName =
-        typeof item.category === "string"
-          ? item.category
-          : item.category?.name;
-
-      if (!categoryName) continue;
-
-      if (!map[categoryName]) {
-        map[categoryName] = {
-          category: categoryName,
-          categoryId: item.category?._id || item.category?.id || null,
-          items: [],
-        };
-      }
-
-      map[categoryName].items.push(item);
-    }
-
-    return Object.values(map);
-  }, [menuData]);
-
-  // ── State ────────────────────────────────────────────────
+  /* ===================== STATE ===================== */
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showItemForm, setShowItemForm] = useState(false);
 
@@ -71,7 +46,38 @@ const MenuPage = () => {
     price: "",
   });
 
-  // ── Add Category ─────────────────────────────────────────
+  /* ===================== GROUP MENU (FIXED LOGIC) ===================== */
+  const groupedMenu = useMemo(() => {
+    const map = {};
+
+    // Source of truth → categories
+    for (const cat of categories) {
+      const catId = cat._id || cat.id;
+      if (!catId) continue;
+
+      map[cat.name] = {
+        category: cat.name,
+        categoryId: catId,
+        items: [],
+      };
+    }
+
+    // Assign items
+    for (const item of menuData) {
+      const categoryName =
+        typeof item.category === "string"
+          ? item.category
+          : item.category?.name;
+
+      if (!categoryName || !map[categoryName]) continue;
+
+      map[categoryName].items.push(item);
+    }
+
+    return Object.values(map);
+  }, [menuData, categories]);
+
+  /* ===================== ADD CATEGORY ===================== */
   const addCategory = async () => {
     if (!newCategory.trim()) return alert("Enter category name");
 
@@ -80,70 +86,66 @@ const MenuPage = () => {
       setNewCategory("");
       setShowCategoryForm(false);
     } catch (err) {
-      console.error(err);
       alert(err?.data?.message || "Failed to add category");
     }
   };
 
-  // ── Add Menu Item ────────────────────────────────────────
+  /* ===================== ADD ITEM ===================== */
   const addMenuItem = async () => {
-    if (!newItem.categoryId?.trim()) return alert("Please select a category");
-    if (!newItem.name?.trim()) return alert("Item name is required");
+    if (!newItem.categoryId) return alert("Select category");
+    if (!newItem.name.trim()) return alert("Item name required");
 
-    const priceNum = Number(newItem.price);
-    if (!newItem.price || isNaN(priceNum) || priceNum <= 0) {
-      return alert("Please enter a valid price (> 0)");
-    }
+    const price = Number(newItem.price);
+    if (!price || price <= 0) return alert("Invalid price");
 
     try {
       await addItemApi({
         category: newItem.categoryId,
         name: newItem.name.trim(),
-        price: priceNum,
+        price,
       }).unwrap();
 
       setNewItem({ categoryId: "", name: "", price: "" });
       setShowItemForm(false);
-      alert("Item added successfully!");
     } catch (err) {
-      console.error("ADD ITEM ERROR:", err);
       alert(err?.data?.message || "Failed to add item");
     }
   };
 
-  // ── Remove Category ──────────────────────────────────────
+  /* ===================== DELETE CATEGORY ===================== */
   const handleRemoveCategory = async (categoryId, categoryName) => {
-    if (!window.confirm(`Delete category "${categoryName}" and all its items?`)) {
+    if (!categoryId) return alert("Invalid category ID");
+
+    if (!window.confirm(`Delete category "${categoryName}" and all its items?`))
       return;
-    }
 
     try {
       await removeCategoryApi({ id: categoryId }).unwrap();
-      alert("Category deleted successfully");
     } catch (err) {
-      console.error("DELETE CATEGORY ERROR:", err);
       alert(err?.data?.message || "Failed to delete category");
     }
   };
 
-  // ── Remove Menu Item ─────────────────────────────────────
+  /* ===================== DELETE ITEM ===================== */
   const handleRemoveItem = async (itemId, itemName) => {
-    if (!window.confirm(`Delete item "${itemName}"?`)) {
-      return;
-    }
+    if (!itemId) return alert("Invalid item ID");
+
+    if (!window.confirm(`Delete item "${itemName}"?`)) return;
 
     try {
       await removeMenuItemApi({ id: itemId }).unwrap();
-      alert("Item deleted successfully");
     } catch (err) {
-      console.error("DELETE ITEM ERROR:", err);
       alert(err?.data?.message || "Failed to delete item");
     }
   };
 
-  // ── Loading / Error States ───────────────────────────────
+  /* ===================== LOADING & ERROR ===================== */
   if (isLoading) {
-    return <div className="text-center mt-20 text-xl font-semibold">Loading Menu...</div>;
+    return (
+      <div className="text-center mt-20 text-xl font-semibold">
+        Loading Menu...
+      </div>
+    );
   }
 
   if (error) {
@@ -154,9 +156,12 @@ const MenuPage = () => {
     );
   }
 
+  /* ===================== UI (UNCHANGED) ===================== */
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <h1 className="text-4xl font-bold text-center text-red-600 mb-8">Our Menu</h1>
+      <h1 className="text-4xl font-bold text-center text-red-600 mb-8">
+        Our Menu
+      </h1>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
@@ -186,21 +191,21 @@ const MenuPage = () => {
         <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg mb-10">
           <h2 className="text-xl font-semibold mb-4">Add New Category</h2>
           <input
-            className="border w-full px-4 py-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Category name (e.g. Starters, Main Course)"
+            className="border w-full px-4 py-3 rounded-lg mb-4"
+            placeholder="Category name"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
           />
           <div className="flex gap-3">
             <button
               onClick={addCategory}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-lg"
             >
               Add Category
             </button>
             <button
               onClick={() => setShowCategoryForm(false)}
-              className="flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg hover:bg-gray-400 transition"
+              className="flex-1 bg-gray-300 py-3 rounded-lg"
             >
               Cancel
             </button>
@@ -215,9 +220,11 @@ const MenuPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <select
-              className="border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border rounded-lg px-4 py-3"
               value={newItem.categoryId}
-              onChange={(e) => setNewItem({ ...newItem, categoryId: e.target.value })}
+              onChange={(e) =>
+                setNewItem({ ...newItem, categoryId: e.target.value })
+              }
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -228,31 +235,35 @@ const MenuPage = () => {
             </select>
 
             <input
-              className="border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border rounded-lg px-4 py-3"
               placeholder="Item name"
               value={newItem.name}
-              onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+              onChange={(e) =>
+                setNewItem({ ...newItem, name: e.target.value })
+              }
             />
 
             <input
               type="number"
-              className="border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border rounded-lg px-4 py-3"
               placeholder="Price (₹)"
               value={newItem.price}
-              onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+              onChange={(e) =>
+                setNewItem({ ...newItem, price: e.target.value })
+              }
             />
           </div>
 
           <div className="flex gap-3 mt-6">
             <button
               onClick={addMenuItem}
-              className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg"
             >
               Add Item
             </button>
             <button
               onClick={() => setShowItemForm(false)}
-              className="flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg hover:bg-gray-400 transition"
+              className="flex-1 bg-gray-300 py-3 rounded-lg"
             >
               Cancel
             </button>
@@ -262,58 +273,53 @@ const MenuPage = () => {
 
       {/* Menu Display */}
       <div className="max-w-6xl mx-auto space-y-14">
-        {groupedMenu.length === 0 && (
-          <p className="text-center text-gray-500 text-lg">No menu items yet. Add some categories and dishes!</p>
-        )}
-
         {groupedMenu.map((section) => (
-          <div key={section.category} className="bg-white rounded-xl shadow p-6">
+          <div key={section.categoryId} className="bg-white rounded-xl shadow p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold border-l-4 border-red-500 pl-3">
                 {section.category}
               </h2>
 
-              {section.categoryId && (
-                <button
-                  onClick={() => handleRemoveCategory(section.categoryId, section.category)}
-                  disabled={isRemovingCategory}
-                  className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 disabled:opacity-50"
-                >
-                  {isRemovingCategory ? "Deleting..." : "Delete Category"}
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  handleRemoveCategory(
+                    section.categoryId,
+                    section.category
+                  )
+                }
+                disabled={isRemovingCategory}
+                className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
+              >
+                {isRemovingCategory ? "Deleting..." : "Delete Category"}
+              </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {section.items.map((item) => (
-                <div
-                  key={item._id}
-                  className="bg-gray-50 p-5 rounded-lg border border-gray-200 hover:shadow-md transition relative group"
-                >
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {item.name}
-                  </h3>
+              {section.items.map((item) => {
+                const itemId = item._id || item.id;
 
-                  {/* {item.description && (
-                    <p className="text-gray-600 text-sm mt-1">{item.description}</p>
-                  )} */}
-
-                  <p className="text-green-700 font-bold mt-3 text-lg">
-                    ₹{Number(item.price).toFixed(2)}
-                  </p>
-
-                  <button
-                    onClick={() => handleRemoveItem(item._id, item.name)}
-                    disabled={isRemovingItem}
-                    className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition disabled:opacity-50"
-                    title="Delete item"
+                return (
+                  <div
+                    key={itemId}
+                    className="bg-gray-50 p-5 rounded-lg border relative group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+                    <h3 className="text-lg font-semibold">{item.name}</h3>
+                    <p className="text-green-700 font-bold mt-3 text-lg">
+                      ₹{Number(item.price).toFixed(2)}
+                    </p>
+
+                    <button
+                      onClick={() =>
+                        handleRemoveItem(itemId, item.name)
+                      }
+                      disabled={isRemovingItem}
+                      className="absolute top-3 right-3 bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}

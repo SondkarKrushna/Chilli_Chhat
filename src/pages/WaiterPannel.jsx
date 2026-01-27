@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
-  useGetItemsQuery,
   useGetCategoriesQuery,
-} from "../store/api/menuApi";
-import { useAddOrderMutation } from "../store/api/waiterPannelApi";
-import { useGetTableQuery } from "../store/api/tableApi";
+  useGetMenuItemsQuery,
+  useGetTablesQuery,
+  useAddOrderMutation,
+} from "../store/api/waiterPannelApi";
 
 const WaiterPannel = () => {
-  const [tableNo, setTableNo] = useState("");
+  const [selectedTableId, setSelectedTableId] = useState("");
   const [tableError, setTableError] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [search, setSearch] = useState("");
@@ -19,18 +19,18 @@ const WaiterPannel = () => {
   const {
     data: tablesData,
     isLoading: tablesLoading,
-    refetch: refetchTables,           
-  } = useGetTableQuery(undefined, {
-    // pollingInterval: 8000,         
+    refetch: refetchTables,
+  } = useGetTablesQuery(undefined, {
+    // pollingInterval: 8000, // optional
   });
 
   const { data: categoriesData = [], isLoading: catLoading } = useGetCategoriesQuery();
-  const { data: itemsData = [], isLoading: itemsLoading } = useGetItemsQuery();
+  const { data: itemsData = [], isLoading: itemsLoading } = useGetMenuItemsQuery();
 
   const [addOrder, { isLoading: isSubmitting, error: submitError }] =
     useAddOrderMutation();
 
-  // Process categories
+  // Categories processing
   const categories = useMemo(() => {
     const raw = Array.isArray(categoriesData)
       ? categoriesData
@@ -41,10 +41,10 @@ const WaiterPannel = () => {
         _id: cat._id || cat.id || "",
         name: cat.name || cat.title || "Unnamed",
       }))
-      .filter((c) => c._id && c.name);
+      .filter((c) => c._id && c.name.trim());
   }, [categoriesData]);
 
-  // Process tables – more permissive (show even if tableNo missing)
+  // Tables processing – using real _id
   const tables = useMemo(() => {
     if (!tablesData) return [];
 
@@ -54,38 +54,33 @@ const WaiterPannel = () => {
 
     return tableArray
       .map((t) => {
-        // More field guesses
-        const value =
+        const id = t._id || t.id || "";
+        const tableNo =
           t.tableNo ||
           t.tableNumber ||
           t.number ||
           t.name ||
           t.label ||
-          String(t._id || "").slice(-6) ||
+          String(id).slice(-6) ||
           "???";
 
-        const display =
-          t.display ||
-          t.name ||
-          t.tableName ||
-          `Table ${value}`;
+        const display = t.display || t.name || t.tableName || `Table ${tableNo}`;
 
         return {
-          id: t._id || t.id || value,
-          tableNo: value,
+          id,
+          tableNo,
           display,
         };
       })
-      .filter((t) => t.tableNo !== "???"); 
+      .filter((t) => t.id && t.tableNo !== "???");
   }, [tablesData]);
 
-  // Force refetch when user selects a table (helps if backend opens access per table)
   useEffect(() => {
-    if (tableNo) {
-      refetchTables(); 
-      setTableError(""); 
+    if (selectedTableId) {
+      refetchTables();
+      setTableError("");
     }
-  }, [tableNo, refetchTables]);
+  }, [selectedTableId, refetchTables]);
 
   // Auto-select first category
   useEffect(() => {
@@ -94,19 +89,18 @@ const WaiterPannel = () => {
     }
   }, [categories, selectedCategoryId]);
 
-  // ── Rest of your logic (menu grouping, filtering, cart, submit) remains unchanged ──
-
+  // Menu grouping
   const menuByCategory = useMemo(() => {
     const grouped = {};
     const items = Array.isArray(itemsData)
       ? itemsData
-      : itemsData?.data || itemsData?.items || [];
+      : itemsData?.data || itemsData?.items || itemsData?.dishes || [];
 
     items.forEach((item) => {
       const catId =
         typeof item.category === "string"
           ? item.category
-          : item.category?._id || item.category?.id;
+          : item.category?._id || item.category?.id || "";
 
       if (!catId) return;
 
@@ -117,10 +111,10 @@ const WaiterPannel = () => {
     return grouped;
   }, [itemsData]);
 
-  const currentItems = useMemo(() => {
-    if (!selectedCategoryId) return [];
-    return menuByCategory[selectedCategoryId] || [];
-  }, [menuByCategory, selectedCategoryId]);
+  const currentItems = useMemo(
+    () => menuByCategory[selectedCategoryId] || [],
+    [menuByCategory, selectedCategoryId]
+  );
 
   const filteredItems = useMemo(
     () =>
@@ -130,21 +124,27 @@ const WaiterPannel = () => {
     [currentItems, search]
   );
 
+  // Add item – make sure we keep real _id
   const addItemToOrder = () => {
     if (!selectedItem) return;
 
+    const realItemId = selectedItem._id || selectedItem.id;
+
+    if (!realItemId) {
+      console.warn("Item has no valid ID", selectedItem);
+      return;
+    }
+
     setOrderItems((prev) => {
-      const exists = prev.find(
-        (i) => (i._id || i.id) === (selectedItem._id || selectedItem.id)
-      );
+      const exists = prev.find((i) => (i._id || i.id) === realItemId);
       if (exists) {
         return prev.map((i) =>
-          (i._id || i.id) === (selectedItem._id || selectedItem.id)
+          (i._id || i.id) === realItemId
             ? { ...i, qty: i.qty + qty }
             : i
         );
       }
-      return [...prev, { ...selectedItem, qty }];
+      return [...prev, { ...selectedItem, _id: realItemId, id: realItemId }];
     });
 
     setSelectedItem(null);
@@ -167,10 +167,25 @@ const WaiterPannel = () => {
     setOrderItems((prev) => prev.filter((item) => (item._id || item.id) !== id));
   };
 
-  const total = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  
+  const total = useMemo(() => {
+    return orderItems.reduce((sum, item) => {
+      // Convert price safely: string → number, null/undefined → 0
+      const priceValue = item.price;
+      const numericPrice = typeof priceValue === 'number'
+        ? priceValue
+        : Number(priceValue) || 0;
+
+      // Skip invalid prices instead of producing NaN
+      const safePrice = isNaN(numericPrice) ? 0 : numericPrice;
+      const safeQty = Number(item.qty) || 1;
+
+      return sum + safePrice * safeQty;
+    }, 0);
+  }, [orderItems]);
 
   const submitOrder = async () => {
-    if (!tableNo) {
+    if (!selectedTableId) {
       setTableError("Please select a table.");
       return;
     }
@@ -180,19 +195,21 @@ const WaiterPannel = () => {
     }
 
     const payload = {
-      tableNo,
+      table: selectedTableId,
       items: orderItems.map((item) => ({
         itemId: item._id || item.id,
         quantity: item.qty,
       })),
-      totalAmount: total,
+      totalAmount: total,   
     };
+
+    console.log("Sending order →", JSON.stringify(payload, null, 2));
 
     try {
       await addOrder(payload).unwrap();
       alert("Order placed successfully!");
       setOrderItems([]);
-      setTableNo("");
+      setSelectedTableId("");
       setTableError("");
     } catch (err) {
       alert(err?.data?.message || "Failed to place order.");
@@ -216,30 +233,28 @@ const WaiterPannel = () => {
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-5 sm:p-6">
         <h1 className="text-2xl font-bold mb-6">🍽️ Waiter Panel</h1>
 
-        {/* Table selection – improved empty/loading state */}
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">Table</label>
           <select
-            value={tableNo}
+            value={selectedTableId}
             onChange={(e) => {
-              setTableNo(e.target.value);
+              setSelectedTableId(e.target.value);
               setTableError("");
             }}
-            className={`border rounded px-4 py-2 w-64 ${
-              tableError ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border rounded px-4 py-2 w-64 ${tableError ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={tablesLoading}
           >
             <option value="">
               {tablesLoading
                 ? "Loading tables..."
                 : tables.length === 0
-                ? "No tables available"
-                : "Select Table"}
+                  ? "No tables available"
+                  : "Select Table"}
             </option>
 
             {tables.map((t) => (
-              <option key={t.id || t.tableNo} value={t.tableNo}>
+              <option key={t.id} value={t.id}>
                 {t.display || t.tableNo}
               </option>
             ))}
@@ -249,7 +264,6 @@ const WaiterPannel = () => {
           )}
         </div>
 
-        {/* rest of your UI (categories, search, items grid, order summary) unchanged */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <div className="flex flex-wrap gap-2">
@@ -257,11 +271,10 @@ const WaiterPannel = () => {
                 <button
                   key={cat._id}
                   onClick={() => setSelectedCategoryId(cat._id)}
-                  className={`px-5 py-2 rounded-full font-medium text-sm transition-colors ${
-                    selectedCategoryId === cat._id
+                  className={`px-5 py-2 rounded-full font-medium text-sm transition-colors ${selectedCategoryId === cat._id
                       ? "bg-green-600 text-white shadow"
                       : "bg-gray-200 hover:bg-gray-300"
-                  }`}
+                    }`}
                 >
                   {cat.name}
                 </button>
@@ -284,13 +297,12 @@ const WaiterPannel = () => {
               ) : (
                 filteredItems.map((item) => (
                   <div
-                    key={item._id}
+                    key={item._id || item.id}
                     onClick={() => setSelectedItem(item)}
-                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-green-400 ${
-                      selectedItem?._id === item._id
+                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-green-400 ${selectedItem && (selectedItem._id || selectedItem.id) === (item._id || item.id)
                         ? "border-green-600 bg-green-50"
                         : "border-gray-200"
-                    }`}
+                      }`}
                   >
                     <h3 className="font-semibold">{item.name}</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -315,26 +327,26 @@ const WaiterPannel = () => {
             ) : (
               orderItems.map((item) => (
                 <div
-                  key={item._id}
+                  key={item._id || item.id}
                   className="flex justify-between items-center mb-3 text-sm"
                 >
                   <span className="font-medium">{item.name}</span>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => changeQty(item._id, "dec")}
+                      onClick={() => changeQty(item._id || item.id, "dec")}
                       className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded hover:bg-red-200"
                     >
                       −
                     </button>
                     <span className="w-8 text-center">{item.qty}</span>
                     <button
-                      onClick={() => changeQty(item._id, "inc")}
+                      onClick={() => changeQty(item._id || item.id, "inc")}
                       className="w-8 h-8 flex items-center justify-center bg-green-100 text-green-600 rounded hover:bg-green-200"
                     >
                       +
                     </button>
                     <button
-                      onClick={() => removeItem(item._id)}
+                      onClick={() => removeItem(item._id || item.id)}
                       className="text-red-500 hover:text-red-700 ml-1"
                     >
                       ✕
@@ -371,12 +383,11 @@ const WaiterPannel = () => {
 
             <button
               onClick={submitOrder}
-              disabled={isSubmitting || orderItems.length === 0 || !tableNo}
-              className={`w-full py-3 rounded font-medium ${
-                isSubmitting || orderItems.length === 0 || !tableNo
+              disabled={isSubmitting || orderItems.length === 0 || !selectedTableId}
+              className={`w-full py-3 rounded font-medium ${isSubmitting || orderItems.length === 0 || !selectedTableId
                   ? "bg-gray-400 cursor-not-allowed text-white"
                   : "bg-slate-800 hover:bg-slate-900 text-white"
-              }`}
+                }`}
             >
               {isSubmitting ? "Placing..." : "Place Order"}
             </button>
@@ -394,4 +405,3 @@ const WaiterPannel = () => {
 };
 
 export default WaiterPannel;
-

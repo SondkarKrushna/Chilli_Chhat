@@ -49,17 +49,17 @@ export const menuApi = createApi({
     removeCategory: builder.mutation({
       query: ({id}) => ({
         url: `api/categories/${id}`,
-        methhod: "DELETE",
+        method: "DELETE",
       }),
       invalidatesTags: ["Menu"],
     }),
     removeMenuItem: builder.mutation({
       query: ({id}) => ({
         url: `api/dishes/${id}`,
-        method: "POST",
+        method: "DELETE",
       }),
       invalidatesTags: ["Menu"],
-    })
+    }),
   }),
 });
 
