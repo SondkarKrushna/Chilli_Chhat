@@ -26,7 +26,7 @@ export const menuApi = createApi({
     }),
 
     getCategories: builder.query({
-        query: () => "api/categories",
+      query: () => "api/categories",
     }),
 
     addCategory: builder.mutation({
@@ -46,6 +46,20 @@ export const menuApi = createApi({
       }),
       invalidatesTags: ["Menu"],
     }),
+    removeCategory: builder.mutation({
+      query: ({id}) => ({
+        url: `api/categories/${id}`,
+        methhod: "DELETE",
+      }),
+      invalidatesTags: ["Menu"],
+    }),
+    removeMenuItem: builder.mutation({
+      query: ({id}) => ({
+        url: `api/dishes/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Menu"],
+    })
   }),
 });
 
@@ -54,4 +68,6 @@ export const {
   useGetCategoriesQuery,
   useAddCategoryMutation,
   useAddItemMutation,
+  useRemoveCategoryMutation,
+  useRemoveMenuItemMutation,
 } = menuApi;

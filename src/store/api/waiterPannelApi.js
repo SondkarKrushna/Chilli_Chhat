@@ -7,8 +7,8 @@ export const waiterPannelApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,
     credentials: "include",   
-    prepareHeaders: (headers) => {  
-      const token = localStorage.getItem("token");
+    prepareHeaders: (headers, { getState }) => {  
+      const token = getState().auth.token;
       console.log("token".token)
 
       if (token) {

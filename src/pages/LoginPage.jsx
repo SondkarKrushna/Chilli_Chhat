@@ -53,7 +53,6 @@ const LoginPage = () => {
       localStorage.setItem("role", role);
       localStorage.setItem("token", resp.token);
 
-
       if (role === "waiter") {
         navigate("/waiter");
       } else if (role === "chef") {

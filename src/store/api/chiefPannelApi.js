@@ -7,7 +7,7 @@ export const chiefPannelApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl,
         prepareHeaders: (headers) => {
-            const token = localStorage.getItem("token"); 
+            const token = localStorage.getItem("token");
 
             if (token) {
                 headers.set("Authorization", `Bearer ${token}`);
