@@ -12,7 +12,7 @@ const MobileProfileMenu = () => {
 
     const logoutHandler = () => {
         localStorage.clear();
-        navigate("/login");
+        navigate("/");
         window.location.reload();
     };
 
