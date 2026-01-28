@@ -8,7 +8,7 @@ import {
 } from "../store/api/waiterPannelApi";
 
 const WaiterPanel = () => {
-  // ── State ────────────────────────────────────────────────
+  //  State
   const [selectedTableId, setSelectedTableId] = useState("");
   const [tableError, setTableError] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
@@ -17,7 +17,7 @@ const WaiterPanel = () => {
   const [qty, setQty] = useState(1);
   const [orderItems, setOrderItems] = useState([]);
 
-  // ── RTK Queries & Mutations ──────────────────────────────
+  // RTK Queries & Mutations
   const {
     data: tablesData,
     isLoading: tablesLoading,
@@ -36,7 +36,7 @@ const WaiterPanel = () => {
     error: ordersError,
   } = useGetOrdersQuery(undefined, { pollingInterval: 30000 });
 
-  // ── Derived / Memoized Values ────────────────────────────
+  // Derived / Memoized Values
   const readyOrders = useMemo(() => {
     if (!Array.isArray(ordersData)) return [];
     return ordersData.filter((order) => {

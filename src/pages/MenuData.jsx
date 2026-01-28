@@ -9,7 +9,6 @@ import {
 } from "../store/api/menuApi";
 
 const MenuPage = () => {
-  /* ===================== DATA ===================== */
   const { data, isLoading, error } = useGetItemsQuery();
   const { data: categoriesData = [] } = useGetCategoriesQuery();
 
@@ -27,7 +26,6 @@ const MenuPage = () => {
     ? categoriesData.data
     : [];
 
-  /* ===================== MUTATIONS ===================== */
   const [addCategoryApi] = useAddCategoryMutation();
   const [addItemApi] = useAddItemMutation();
   const [removeCategoryApi, { isLoading: isRemovingCategory }] =
@@ -35,7 +33,6 @@ const MenuPage = () => {
   const [removeMenuItemApi, { isLoading: isRemovingItem }] =
     useRemoveMenuItemMutation();
 
-  /* ===================== STATE ===================== */
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showItemForm, setShowItemForm] = useState(false);
 
@@ -46,7 +43,6 @@ const MenuPage = () => {
     price: "",
   });
 
-  /* ===================== GROUP MENU (FIXED LOGIC) ===================== */
   const groupedMenu = useMemo(() => {
     const map = {};
 
@@ -77,7 +73,6 @@ const MenuPage = () => {
     return Object.values(map);
   }, [menuData, categories]);
 
-  /* ===================== ADD CATEGORY ===================== */
   const addCategory = async () => {
     if (!newCategory.trim()) return alert("Enter category name");
 
@@ -90,7 +85,6 @@ const MenuPage = () => {
     }
   };
 
-  /* ===================== ADD ITEM ===================== */
   const addMenuItem = async () => {
     if (!newItem.categoryId) return alert("Select category");
     if (!newItem.name.trim()) return alert("Item name required");
@@ -112,7 +106,6 @@ const MenuPage = () => {
     }
   };
 
-  /* ===================== DELETE CATEGORY ===================== */
   const handleRemoveCategory = async (categoryId, categoryName) => {
     if (!categoryId) return alert("Invalid category ID");
 
@@ -126,7 +119,6 @@ const MenuPage = () => {
     }
   };
 
-  /* ===================== DELETE ITEM ===================== */
   const handleRemoveItem = async (itemId, itemName) => {
     if (!itemId) return alert("Invalid item ID");
 
@@ -139,7 +131,6 @@ const MenuPage = () => {
     }
   };
 
-  /* ===================== LOADING & ERROR ===================== */
   if (isLoading) {
     return (
       <div className="text-center mt-20 text-xl font-semibold">
@@ -156,7 +147,6 @@ const MenuPage = () => {
     );
   }
 
-  /* ===================== UI (UNCHANGED) ===================== */
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <h1 className="text-4xl font-bold text-center text-red-600 mb-8">

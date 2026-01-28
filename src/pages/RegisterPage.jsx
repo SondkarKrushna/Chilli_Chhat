@@ -20,7 +20,6 @@ const RegisterPage = () => {
 
   const navigate = useNavigate();
 
-  // ✅ RTK Query Hook
   const [registerUser, { isLoading }] = useRegisterUserMutation();
 
   useEffect(() => {
@@ -58,12 +57,12 @@ const RegisterPage = () => {
       name: fullName,
       email,
       password,
-      role, // ✅ role sent to backend
+      role, 
     };
 
     try {
       await registerUser(payload).unwrap();
-      navigate("/"); // redirect to login page
+      navigate("/"); 
     } catch (err) {
       setError(err?.data?.message || "Registration failed");
     }
