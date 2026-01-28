@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL;
+const baseUrl = `${import.meta.env.VITE_BACKEND_URL}`;
 
 export const waiterPannelApi = createApi({
   reducerPath: "waiterPannelApi",
@@ -39,7 +39,7 @@ export const waiterPannelApi = createApi({
       providesTags: ["Tables"],
     }),
 
-    // ✅ Add Order
+    // Add Order
     addOrder: builder.mutation({
       query: (orderData) => ({
         url: "/api/orders",
@@ -53,6 +53,14 @@ export const waiterPannelApi = createApi({
       query: () => "/api/orders/waiter",
       providesTags: ["Orders"],
     }),
+    completeOrder: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/api/orders/${id}/complete`,
+        method: "PUT",
+        body: { status },
+      }),
+      invalidatesTags: ["Orders"],
+    }),
   }),
 });
 
@@ -62,4 +70,5 @@ export const {
   useGetTablesQuery,
   useAddOrderMutation,
   useGetOrdersQuery,
+  useCompleteOrderMutation,
 } = waiterPannelApi;

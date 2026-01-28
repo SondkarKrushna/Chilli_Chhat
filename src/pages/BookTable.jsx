@@ -4,6 +4,7 @@ import {
   useUpdateTableMutation,
   useAddTableMutation,
   useRemoveTableMutation,
+  useUnbookTableMutation,
 } from "../store/api/tableApi";
 
 const TableBooking = () => {
@@ -29,6 +30,7 @@ const TableBooking = () => {
   const [updateTable, { isLoading: isUpdating }] = useUpdateTableMutation();
   const [addTable, { isLoading: isAdding }] = useAddTableMutation();
   const [removeTable, { isLoading: isDeleting }] = useRemoveTableMutation();
+  const [unbookTable, { isLoading: isUnbooking }] = useUnbookTableMutation();
 
   const [customerName, setCustomerName] = useState("");
   const [members, setMembers] = useState("");
@@ -91,6 +93,17 @@ const TableBooking = () => {
       await removeTable({ id: tableId }).unwrap();
     } catch (err) {
       alert(err?.data?.message || "Failed to delete table.");
+    }
+  };
+
+  const handleUnbookTable = async (tableId, tableName) => {
+    if (!window.confirm(`Unbook "${tableName || "this table"}"?`)) return;
+
+    try {
+      await unbookTable({ id: tableId }).unwrap();
+      alert("Table unbooked successfully!");
+    } catch (err) {
+      alert(err?.data?.message || "Failed to unbook table.");
     }
   };
 
@@ -162,7 +175,7 @@ const TableBooking = () => {
                     : "bg-white border-green-300 hover:border-green-500 hover:shadow-lg cursor-pointer"
                 }`}
             >
-              {/* Delete button */}
+              {/* Action buttons - only shown when appropriate */}
               {available && (
                 <button
                   onClick={(e) => {
@@ -171,8 +184,23 @@ const TableBooking = () => {
                   }}
                   className="absolute top-2 right-2 text-red-600 bg-white rounded-full p-1 shadow"
                   disabled={isDeleting}
+                  title="Delete table"
                 >
                   🗑️
+                </button>
+              )}
+
+              {!available && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUnbookTable(tableId, table.name);
+                  }}
+                  className="absolute top-2 left-2 text-green-600 bg-white rounded-full p-1 shadow hover:bg-green-50"
+                  disabled={isUnbooking}
+                  title="Unbook table"
+                >
+                  🔓
                 </button>
               )}
 

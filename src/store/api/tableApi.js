@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL;
+const baseUrl = `${import.meta.env.VITE_BACKEND_URL}`;
 
 export const tableApi = createApi({
   reducerPath: "tableApi",
@@ -57,6 +57,13 @@ export const tableApi = createApi({
       }),
       invalidatesTags: ["Tables"],
     }),
+    unbookTable: builder.mutation({
+      query: ({id}) => ({
+        url: `/api/tables/${id}/unbook`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Tables"],
+    })
   }),
 });
 
@@ -65,4 +72,5 @@ export const {
   useAddTableMutation,
   useUpdateTableMutation,
   useRemoveTableMutation,
+  useUnbookTableMutation
 } = tableApi;
