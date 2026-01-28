@@ -3,6 +3,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../public/logo.png";
 import ProfileMenu from "./ProfileMenu";
+import MobileProfileMenu from "./MobileProfileMenu";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
@@ -126,8 +127,8 @@ const NavBar = () => {
 
             {/* PROFILE MENU (MOBILE) */}
             {isLoggedIn && (
-              <div className="pt-3 border-t">
-                <ProfileMenu />
+              <div className="pt-3 border-t sm:hidden">
+                <MobileProfileMenu />
               </div>
             )}
           </ul>
