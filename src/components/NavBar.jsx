@@ -2,19 +2,20 @@ import React, { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../public/logo.png";
-import { useLogout } from "../store/slices/logout/logout";   
+import ProfileMenu from "./ProfileMenu";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const logout = useLogout();   
 
   const role = localStorage.getItem("role");
-  const isLoggedIn = !!localStorage.getItem("token");   
+  const isLoggedIn = !!localStorage.getItem("token");
 
   const navItemClass = ({ isActive }) =>
     `cursor-pointer transition ${
-      isActive ? "text-amber-600 font-semibold" : "text-[#3F2A1D] hover:text-amber-600"
+      isActive
+        ? "text-amber-600 font-semibold"
+        : "text-[#3F2A1D] hover:text-amber-600"
     }`;
 
   return (
@@ -69,15 +70,8 @@ const NavBar = () => {
             </NavLink>
           )}
 
-          {/* Logout – shown only when logged in */}
-          {isLoggedIn && (
-            <button
-              onClick={logout}
-              className="px-5 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition font-medium"
-            >
-              Logout
-            </button>
-          )}
+          {/* PROFILE BUTTON */}
+          {isLoggedIn && <ProfileMenu />}
         </div>
 
         {/* MOBILE TOGGLE */}
@@ -130,17 +124,11 @@ const NavBar = () => {
               </NavLink>
             )}
 
-            {/* Logout in mobile menu – shown only when logged in */}
+            {/* PROFILE MENU (MOBILE) */}
             {isLoggedIn && (
-              <button
-                onClick={() => {
-                  logout();
-                  setOpen(false);
-                }}
-                className="mt-3 text-center px-5 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 font-medium"
-              >
-                Logout
-              </button>
+              <div className="pt-3 border-t">
+                <ProfileMenu />
+              </div>
             )}
           </ul>
         </div>

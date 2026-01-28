@@ -50,8 +50,11 @@ const LoginPage = () => {
       console.log(resp);
 
       const role = formData.role;
-      localStorage.setItem("role", role);
+      // localStorage.setItem(getDetails, )
       localStorage.setItem("token", resp.token);
+      localStorage.setItem("name", resp.user.name);
+      localStorage.setItem("email", resp.user.email);
+      localStorage.setItem("role", role);
 
       if (role === "waiter") {
         navigate("/waiter");
