@@ -262,7 +262,7 @@ const WaiterPanel = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-5 sm:p-6">
-        <h1 className="text-2xl font-bold mb-6">🍽️ Waiter Panel</h1>
+        <h1 className="text-2xl font-bold mb-6 font-lobster">🍽️ Waiter Panel</h1>
 
         {/* Table Selection */}
         <div className="mb-6">

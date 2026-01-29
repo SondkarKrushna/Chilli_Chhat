@@ -11,7 +11,7 @@ const AdminPanel = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       {/* HEADER */}
       <div className="bg-slate-900 text-white p-4 rounded-lg shadow">
-        <h1 className="text-xl font-semibold">🛠️ Admin Panel</h1>
+        <h1 className="text-xl font-semibold font-lobster">🛠️ Admin Panel</h1>
         <p className="text-sm text-gray-300">
           Manage tables and menu
         </p>

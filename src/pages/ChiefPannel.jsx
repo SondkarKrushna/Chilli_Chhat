@@ -77,8 +77,8 @@ const ChefPannel = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="bg-slate-900 text-white p-5 rounded-xl mb-8">
-        <h1 className="text-2xl font-bold">👨‍🍳 Chef Dashboard</h1>
-        <p className="text-sm text-gray-300">Live kitchen orders</p>
+        <h1 className="text-2xl font-bold font-lobster">👨‍🍳 Chief Pannel</h1>
+        <p className="text-sm text-gray-300 ml-2">Live kitchen orders</p>
       </div>
 
       {orders.length === 0 ? (
