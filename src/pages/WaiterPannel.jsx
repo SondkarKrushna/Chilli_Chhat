@@ -8,7 +8,7 @@ import {
 } from "../store/api/waiterPannelApi";
 
 const WaiterPanel = () => {
-  //  State
+  //State
   const [selectedTableId, setSelectedTableId] = useState("");
   const [tableError, setTableError] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
@@ -22,7 +22,7 @@ const WaiterPanel = () => {
     data: tablesData,
     isLoading: tablesLoading,
     refetch: refetchTables,
-  } = useGetTablesQuery(undefined, { pollingInterval: 8000 });
+  } = useGetTablesQuery();
 
   const { data: categoriesData = [], isLoading: catLoading } = useGetCategoriesQuery();
 
@@ -34,17 +34,24 @@ const WaiterPanel = () => {
     data: ordersData = [],
     isLoading: ordersLoading,
     error: ordersError,
-  } = useGetOrdersQuery(undefined, { pollingInterval: 30000 });
+  } = useGetOrdersQuery();
 
   // Derived / Memoized Values
+  console.log(ordersData);
   const readyOrders = useMemo(() => {
     if (!Array.isArray(ordersData)) return [];
-    return ordersData.filter((order) => {
-      const status = (order.status || "").toLowerCase();
+
+    return ordersData.filter(order => {
+      const status = (order.status || "").toUpperCase().trim();
       return (
-        status === "ready" ||
-        status === "prepared" ||
-        status === "served" ||
+        // status === "ready" ||
+        status === "READY" ||
+        // status === "prepared" ||
+        // status === "served" ||
+        // status === "complete" ||          
+        // status === "Completed" ||  
+        status === "COMPLETED" ||
+        // status === "delivered" ||          
         order.isReady === true
       );
     });
@@ -240,6 +247,7 @@ const WaiterPanel = () => {
       </div>
     );
   }
+  // console.log(ordersData);
 
   const selectedCategoryName =
     categories.find((c) => c._id === selectedCategoryId)?.name || "Select category";
@@ -259,17 +267,16 @@ const WaiterPanel = () => {
               setSelectedTableId(e.target.value);
               setTableError("");
             }}
-            className={`border rounded px-4 py-2 w-64 ${
-              tableError ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`border rounded px-4 py-2 w-64 ${tableError ? "border-red-500" : "border-gray-300"
+              }`}
             disabled={tablesLoading}
           >
             <option value="">
               {tablesLoading
                 ? "Loading tables..."
                 : tables.length === 0
-                ? "No tables available"
-                : "Select Table"}
+                  ? "No tables available"
+                  : "Select Table"}
             </option>
             {tables.map((t) => (
               <option key={t.id} value={t.id}>
@@ -288,11 +295,10 @@ const WaiterPanel = () => {
                 <button
                   key={cat._id}
                   onClick={() => setSelectedCategoryId(cat._id)}
-                  className={`px-5 py-2 rounded-full font-medium text-sm transition-colors ${
-                    selectedCategoryId === cat._id
-                      ? "bg-green-600 text-white shadow"
-                      : "bg-gray-200 hover:bg-gray-300"
-                  }`}
+                  className={`px-5 py-2 rounded-full font-medium text-sm transition-colors ${selectedCategoryId === cat._id
+                    ? "bg-green-600 text-white shadow"
+                    : "bg-gray-200 hover:bg-gray-300"
+                    }`}
                 >
                   {cat.name}
                 </button>
@@ -317,11 +323,10 @@ const WaiterPanel = () => {
                   <div
                     key={item._id || item.id}
                     onClick={() => setSelectedItem(item)}
-                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-green-400 ${
-                      selectedItem && (selectedItem._id || selectedItem.id) === (item._id || item.id)
-                        ? "border-green-600 bg-green-50"
-                        : "border-gray-200"
-                    }`}
+                    className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md hover:border-green-400 ${selectedItem && (selectedItem._id || selectedItem.id) === (item._id || item.id)
+                      ? "border-green-600 bg-green-50"
+                      : "border-gray-200"
+                      }`}
                   >
                     <h3 className="font-semibold">{item.name}</h3>
                     <p className="text-sm text-gray-600 mt-1">
@@ -402,11 +407,10 @@ const WaiterPanel = () => {
             <button
               onClick={submitOrder}
               disabled={isSubmitting || orderItems.length === 0 || !selectedTableId}
-              className={`w-full py-3 rounded font-medium ${
-                isSubmitting || orderItems.length === 0 || !selectedTableId
-                  ? "bg-gray-400 cursor-not-allowed text-white"
-                  : "bg-slate-800 hover:bg-slate-900 text-white"
-              }`}
+              className={`w-full py-3 rounded font-medium ${isSubmitting || orderItems.length === 0 || !selectedTableId
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-slate-800 hover:bg-slate-900 text-white"
+                }`}
             >
               {isSubmitting ? "Placing..." : "Place Order"}
             </button>
@@ -458,6 +462,8 @@ const WaiterPanel = () => {
                       READY
                     </span>
                   </div>
+
+
 
                   <div className="space-y-1.5 text-sm mb-4">
                     {order.items?.slice(0, 4).map((item, idx) => (

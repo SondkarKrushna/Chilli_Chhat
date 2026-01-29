@@ -10,9 +10,7 @@ const ChefPannel = () => {
     isLoading,
     isError,
     error,
-  } = useGetOrdersQuery(undefined, {
-    pollingInterval: 10000,
-  });
+  } = useGetOrdersQuery();
 
   const orders = Array.isArray(response)
     ? response
