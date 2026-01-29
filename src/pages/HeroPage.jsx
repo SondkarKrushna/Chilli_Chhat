@@ -34,7 +34,7 @@ const HeroPage = () => {
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Welcome to Chili and Chaat
+            <span className="font-satisfy">Welcome to Chili and Chaat</span>
           </h1>
 
           <p className="text-lg md:text-xl max-w-2xl mb-6 text-gray-200">
