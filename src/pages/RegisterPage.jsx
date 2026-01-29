@@ -8,6 +8,11 @@ import mobileBg from "../../public/mobileBg.jpg";
 import { useRegisterUserMutation } from "../store/api/registerApi";
 
 const RegisterPage = () => {
+
+  useEffect(() => {
+    document.title = "Register Page | Restaurant Management System";
+  }, []);
+
   const [role, setRole] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -57,12 +62,12 @@ const RegisterPage = () => {
       name: fullName,
       email,
       password,
-      role, 
+      role,
     };
 
     try {
       await registerUser(payload).unwrap();
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       setError(err?.data?.message || "Registration failed");
     }

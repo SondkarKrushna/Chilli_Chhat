@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   useGetItemsQuery,
   useAddCategoryMutation,
@@ -9,6 +9,10 @@ import {
 } from "../store/api/menuApi";
 
 const MenuPage = () => {
+
+  useEffect(() => {
+      document.title = "Add Menu | Restaurant Management System";
+    }, []);
   const { data, isLoading, error } = useGetItemsQuery();
   const { data: categoriesData = [] } = useGetCategoriesQuery();
 

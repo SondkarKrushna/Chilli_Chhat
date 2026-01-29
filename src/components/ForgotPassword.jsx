@@ -5,6 +5,11 @@ import background from "../../public/background.jpg";
 import mobileBg from "../../public/mobileBg.jpg";
 
 const ForgotPassword = () => {
+
+    useEffect(() => {
+        document.title = "Forgot Password | Restaurant Management System";
+    }, []);
+
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const [email, setEmail] = useState("");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Offers from "../components/Offers";
 import hero from "../../public/indianFood.jpg";
@@ -7,6 +7,10 @@ import review from "../../public/review.png";
 
 const HeroPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+      document.title = "Home Page | Restaurant Management System";
+    }, []);
 
   return (
     <>

@@ -12,6 +12,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+      document.title = "Login Page | Restaurant Management System";
+    }, []);
+
   // UI STATE 
   const [showPassword, setShowPassword] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);

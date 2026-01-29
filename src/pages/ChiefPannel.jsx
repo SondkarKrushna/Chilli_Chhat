@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   useGetOrdersQuery,
   useUpdateStatusMutation,
 } from "../store/api/chiefPannelApi";
 
 const ChefPannel = () => {
+
+  useEffect(() => {
+    document.title = "Chief Panel | Restaurant Management System";
+  }, []);
+
   const {
     data: response = [],
     isLoading,

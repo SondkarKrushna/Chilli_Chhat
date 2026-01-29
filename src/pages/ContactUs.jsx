@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import contactUs from "../../public/contactUs1.png";
 
 const ContactUs = () => {
+
+  useEffect(() => {
+    document.title = "Contact | Restaurant Management System";
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
       <div className="max-w-6xl w-full bg-white rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">

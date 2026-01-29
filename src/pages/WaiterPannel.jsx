@@ -8,6 +8,12 @@ import {
 } from "../store/api/waiterPannelApi";
 
 const WaiterPanel = () => {
+
+  useEffect(() => {
+    document.title = "Waiter Panel | Restaurant Management System";
+  }, []);
+
+
   //State
   const [selectedTableId, setSelectedTableId] = useState("");
   const [tableError, setTableError] = useState("");

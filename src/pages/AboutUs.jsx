@@ -1,10 +1,14 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
 import food1 from "../../public/aboutDishes.jpg";
 import food2 from "../../public/aboutDishes1.jpg";
 
 const WhyDineWithUs = () => {
+
+  useEffect(() => {
+    document.title = "About Chilli Chaat | Restaurant Management System";
+  }, []);
 
   const navigate = useNavigate();
 

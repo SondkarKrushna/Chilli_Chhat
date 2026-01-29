@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useGetTableQuery,
   useUpdateTableMutation,
@@ -8,6 +8,11 @@ import {
 } from "../store/api/tableApi";
 
 const TableBooking = () => {
+
+  useEffect(() => {
+    document.title = "Book Table | Restaurant Management System";
+  }, []);
+
   const {
     data: rawTablesData,
     isLoading,
@@ -20,12 +25,12 @@ const TableBooking = () => {
   // normalize + sort
   const tables = Array.isArray(rawTablesData)
     ? [...rawTablesData].sort((a, b) =>
-        (a.id || a._id).localeCompare(b.id || b._id)
-      )
+      (a.id || a._id).localeCompare(b.id || b._id)
+    )
     : rawTablesData?.tables ||
-      rawTablesData?.data ||
-      rawTablesData?.items ||
-      [];
+    rawTablesData?.data ||
+    rawTablesData?.items ||
+    [];
 
   const [updateTable, { isLoading: isUpdating }] = useUpdateTableMutation();
   const [addTable, { isLoading: isAdding }] = useAddTableMutation();
@@ -167,10 +172,9 @@ const TableBooking = () => {
             <div
               key={tableId}
               className={`rounded-xl p-5 shadow-md border-2 transition-all duration-200 relative
-                ${
-                  !available
-                    ? "bg-red-50 border-red-400 opacity-75 cursor-not-allowed"
-                    : isSelected
+                ${!available
+                  ? "bg-red-50 border-red-400 opacity-75 cursor-not-allowed"
+                  : isSelected
                     ? "bg-green-100 border-green-600 shadow-lg scale-[1.03]"
                     : "bg-white border-green-300 hover:border-green-500 hover:shadow-lg cursor-pointer"
                 }`}
@@ -210,9 +214,8 @@ const TableBooking = () => {
                 </h2>
 
                 <p
-                  className={`text-center font-semibold text-lg ${
-                    available ? "text-green-600" : "text-red-600"
-                  }`}
+                  className={`text-center font-semibold text-lg ${available ? "text-green-600" : "text-red-600"
+                    }`}
                 >
                   {available ? "AVAILABLE" : "BOOKED"}
                 </p>
@@ -248,11 +251,10 @@ const TableBooking = () => {
         <button
           onClick={bookTable}
           disabled={isUpdating || !selectedTableId}
-          className={`w-full py-3 rounded-lg font-semibold text-white transition ${
-            isUpdating || !selectedTableId
+          className={`w-full py-3 rounded-lg font-semibold text-white transition ${isUpdating || !selectedTableId
               ? "bg-green-400 cursor-not-allowed"
               : "bg-green-600 hover:bg-green-700"
-          }`}
+            }`}
         >
           {isUpdating ? "Booking..." : "Confirm Booking"}
         </button>

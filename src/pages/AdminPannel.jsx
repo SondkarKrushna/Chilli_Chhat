@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const AdminPanel = () => {
+
+  useEffect(() => {
+    document.title = "Admin Panel | Restaurant Management System";
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* HEADER */}
