@@ -426,7 +426,7 @@ const WaiterPanel = () => {
         </div>
 
         {/* Ready to Serve Section */}
-        <div className="mt-12">
+        {/* <div className="mt-12">
           <h2 className="text-xl font-bold mb-5 flex items-center gap-3">
             <span>✅ Ready to Serve</span>
             {ordersLoading && <span className="text-sm text-gray-500 font-normal">(loading...)</span>}
@@ -490,7 +490,7 @@ const WaiterPanel = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
