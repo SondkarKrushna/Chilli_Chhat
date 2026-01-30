@@ -194,7 +194,7 @@ const OfferCard = ({ img, title, desc, price, oldPrice, bg, onOrder }) => (
         src={img}
         alt={title}
         className="h-48 object-contain"
-        whileHover={{ rotate: 5, scale: 1.1 }}
+        whileHover={{ scale: 1.1 }}
         transition={{ type: "spring", stiffness: 200 }}
       />
     </div>
