@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import Offers from "../components/Offers";
 import hero from "../../public/indianFood.jpg";
 import mobile from "../../public/mobile_indian_food.jpeg";
@@ -9,8 +10,8 @@ const HeroPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-      document.title = "Home Page | Restaurant Management System";
-    }, []);
+    document.title = "Home Page | Restaurant Management System";
+  }, []);
 
   return (
     <>
@@ -33,9 +34,16 @@ const HeroPage = () => {
 
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            <span className="font-satisfy">Welcome to Chili and Chaat</span>
-          </h1>
+          <motion.h1
+            initial={{ y: -20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 1, type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+            // whileHover={{ backgroundColor: "#f97316" }}
+            className="text-4xl md:text-6xl font-bold mb-4">
+            <span
+              className="font-satisfy">Welcome to Chili and Chaat</span>
+          </motion.h1>
 
           <p className="text-lg md:text-xl max-w-2xl mb-6 text-gray-200">
             Simplify restaurant ordering with a fast, digital waiter system.
@@ -59,7 +67,12 @@ const HeroPage = () => {
           </div>
 
           {/* Review Card */}
-          <div className="absolute bottom-24 right-8 max-sm:static max-sm:mt-10">
+          <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 1, type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+          className="absolute bottom-24 right-8 max-sm:static max-sm:mt-10">
             <div
               onClick={() => navigate("/Testimonials")}
               className="rounded-3xl bg-gradient-to-b from-[#CFA24D]/70 via-[#8B5A2B]/60 to-[#1C1C1C]/90 backdrop-blur-md text-white p-5 shadow-2xl border border-white/10 max-sm:w-64 max-sm:mx-auto cursor-pointer"
@@ -74,7 +87,7 @@ const HeroPage = () => {
                 Our 2600+ Happy Customers
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 

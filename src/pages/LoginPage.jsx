@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaUserTie, FaEye, FaEyeSlash } from "react-icons/fa";
+import { motion } from "framer-motion";
 import { useLoginUserMutation } from "../store/api/loginApi";
 import background from "../../public/background.jpg";
 import mobileBg from "../../public/mobileBg.jpg";
@@ -54,7 +55,6 @@ const LoginPage = () => {
       console.log(resp);
 
       const role = formData.role;
-      // localStorage.setItem(getDetails, )
       localStorage.setItem("token", resp.token);
       localStorage.setItem("name", resp.user.name);
       localStorage.setItem("email", resp.user.email);
