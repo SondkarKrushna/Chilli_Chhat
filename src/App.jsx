@@ -40,7 +40,7 @@ function App() {
 
         {/* ================= PUBLIC ROUTES ================= */}
         <Route path="/home" element={<HeroPage />} />
-        <Route path="/menu" element={<MenuPage />} />
+        {/* <Route path="/menu" element={<MenuPage />} /> */}
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/testimonials" element={<Testimonials />} />
@@ -53,6 +53,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <TableBooking />
+              <MenuPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/menu"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <MenuPage />
             </ProtectedRoute>
           }
         />
