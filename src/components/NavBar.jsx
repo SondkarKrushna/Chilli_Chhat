@@ -32,7 +32,7 @@ const NavBar = () => {
             onClick={() => navigate("/home")}
           />
           <span
-            className="text-lg font-bold tracking-wide"
+            className="text-lg font-bold font-lobster tracking-wide"
             onClick={() => navigate("/home")}
           >
             Chili & Chaat
