@@ -13,10 +13,9 @@ const NavBar = () => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   const navItemClass = ({ isActive }) =>
-    `cursor-pointer transition ${
-      isActive
-        ? "text-amber-600 font-semibold"
-        : "text-[#3F2A1D] hover:text-amber-600"
+    `cursor-pointer transition ${isActive
+      ? "text-amber-600 font-semibold"
+      : "text-[#3F2A1D] hover:text-amber-600"
     }`;
 
   return (
@@ -42,6 +41,17 @@ const NavBar = () => {
         {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-8 font-medium">
           {/* <NavLink to="/menu" className={navItemClass}>Menu</NavLink> */}
+
+          {(role === "admin" || role === "waiter") && (
+            <NavLink
+              to="/menu"
+              className={navItemClass}
+            >
+              Menu
+            </NavLink>
+          )}
+
+
           <NavLink to="/about" className={navItemClass}>About</NavLink>
           <NavLink to="/contact" className={navItemClass}>Contact</NavLink>
 
