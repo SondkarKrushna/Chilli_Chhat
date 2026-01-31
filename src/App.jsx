@@ -18,12 +18,18 @@ import TableBooking from "./pages/BookTable";
 import Testimonials from "./components/Testimonials";
 import ForgotPassword from "./components/ForgotPassword";
 import AdminPanel from "./pages/AdminPannel";
+import Footer from "./components/Footer";
 
 function App() {
   const location = useLocation();
 
   // Hide navbar on auth pages
   const hideNavBar =
+    location.pathname === "/" ||
+    location.pathname === "/register" ||
+    location.pathname === "/forgot-pass";
+
+    const hideFooter =
     location.pathname === "/" ||
     location.pathname === "/register" ||
     location.pathname === "/forgot-pass";
@@ -53,7 +59,6 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <TableBooking />
-              <MenuPage />
             </ProtectedRoute>
           }
         />
@@ -94,6 +99,7 @@ function App() {
           }
         />
       </Routes>
+      {!hideFooter && <Footer />}
     </>
   );
 }

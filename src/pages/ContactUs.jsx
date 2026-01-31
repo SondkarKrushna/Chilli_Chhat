@@ -43,7 +43,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-200 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 via-white to-orange-200 px-4 py-10 ">
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
