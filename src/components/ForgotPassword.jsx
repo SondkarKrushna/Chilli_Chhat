@@ -93,7 +93,7 @@ const ForgotPassword = () => {
                     {!otpSent && (
                         <button
                             onClick={handleSendOtp}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700
+                            className="w-full bg-orange-500 hover:bg-orange-600
                          text-white py-2 sm:py-2.5
                          rounded-lg font-semibold
                          transition duration-200
@@ -143,7 +143,7 @@ const ForgotPassword = () => {
                     Remembered password?{" "}
                     <span
                         onClick={() => navigate("/")}
-                        className="text-indigo-600 hover:underline font-semibold cursor-pointer"
+                        className="text-orange-500 hover:underline font-semibold cursor-pointer"
                     >
                         Back to Login
                     </span>

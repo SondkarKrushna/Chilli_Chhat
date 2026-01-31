@@ -41,6 +41,7 @@ const NavBar = () => {
 
         {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-8 font-medium">
+          {/* <NavLink to="/menu" className={navItemClass}>Menu</NavLink> */}
           <NavLink to="/about" className={navItemClass}>About</NavLink>
           <NavLink to="/contact" className={navItemClass}>Contact</NavLink>
 

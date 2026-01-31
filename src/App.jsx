@@ -65,7 +65,7 @@ function App() {
         <Route
           path="/menu"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["admin", "waiter"]}>
               <MenuPage />
             </ProtectedRoute>
           }

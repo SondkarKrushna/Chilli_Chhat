@@ -169,7 +169,7 @@ const RegisterPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold"
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
@@ -177,7 +177,7 @@ const RegisterPage = () => {
 
         <div className="text-center mt-4 text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/" className="text-indigo-600 font-semibold">
+          <Link to="/" className="text-orange-500 font-semibold">
             Login
           </Link>
         </div>

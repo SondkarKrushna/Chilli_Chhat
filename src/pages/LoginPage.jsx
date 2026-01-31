@@ -170,7 +170,7 @@ const LoginPage = () => {
           {/* FORGOT PASSWORD */}
           <div className="text-right">
             <span
-              className="text-sm text-indigo-600 hover:underline cursor-pointer"
+              className="text-sm text-orange-500 hover:underline cursor-pointer"
               onClick={() => navigate("/forgot-pass")}
             >
               Forgot password?
@@ -181,7 +181,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-semibold transition"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg font-semibold transition"
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
@@ -192,7 +192,7 @@ const LoginPage = () => {
           New user?{" "}
           <Link
             to="/register"
-            className="text-indigo-600 hover:underline font-semibold"
+            className="text-orange-500 hover:underline font-semibold"
           >
             Register Now
           </Link>

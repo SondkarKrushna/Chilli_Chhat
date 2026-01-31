@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+// import { useSelector } from "react-redux";
 import {
   useGetItemsQuery,
   useAddCategoryMutation,
@@ -14,9 +15,15 @@ const MenuPage = () => {
     document.title = "Add Menu | Restaurant Management System";
   }, []);
 
+  const role = localStorage.getItem("role");
+
+  const isAdmin = role === "admin";
+
+
   const { data, isLoading, error } = useGetItemsQuery();
   const { data: categoriesData = [] } = useGetCategoriesQuery();
   const [toast, setToast] = useState(null);
+  const [search, setSearch] = useState("");
 
   const menuData = Array.isArray(data)
     ? data
@@ -46,31 +53,41 @@ const MenuPage = () => {
   });
 
   const groupedMenu = useMemo(() => {
-    const map = {};
+  const map = {};
 
-    for (const cat of categories) {
-      const catId = cat._id || cat.id;
-      if (!catId) continue;
+  for (const cat of categories) {
+    const catId = cat._id || cat.id;
+    if (!catId) continue;
 
-      map[cat.name] = {
-        category: cat.name,
-        categoryId: catId,
-        items: [],
-      };
+    map[cat.name] = {
+      category: cat.name,
+      categoryId: catId,
+      items: [],
+    };
+  }
+
+  for (const item of menuData) {
+    const categoryName =
+      typeof item.category === "string"
+        ? item.category
+        : item.category?.name;
+
+    if (!categoryName || !map[categoryName]) continue;
+
+    // 🔍 Search filter
+    if (
+      search &&
+      !item.name.toLowerCase().includes(search.toLowerCase())
+    ) {
+      continue;
     }
 
-    for (const item of menuData) {
-      const categoryName =
-        typeof item.category === "string"
-          ? item.category
-          : item.category?.name;
+    map[categoryName].items.push(item);
+  }
 
-      if (!categoryName || !map[categoryName]) continue;
-      map[categoryName].items.push(item);
-    }
+  return Object.values(map).filter(section => section.items.length > 0);
+}, [menuData, categories, search]);
 
-    return Object.values(map);
-  }, [menuData, categories]);
 
   const addCategory = async () => {
     if (!newCategory.trim()) return alert("Enter category name");
@@ -141,32 +158,59 @@ const MenuPage = () => {
       transition={{ duration: 0.6 }}
       className="min-h-screen bg-gray-100 py-10 px-4"
     >
-      <h1 className="text-4xl font-bold text-center text-red-600 mb-8">
-        Our Menu
-      </h1>
+    {/* Header Section */}
+{/* Header Section */}
+<div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+  
+  <h1 className="text-3xl sm:text-4xl font-bold text-red-600 text-center sm:text-left">
+    Our Menu
+  </h1>
+
+  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+    <input
+      type="text"
+      placeholder="Search menu..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="w-full sm:w-64 border border-orange-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+    />
+
+    <button
+      onClick={() => {}}
+      className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg"
+    >
+      Search
+    </button>
+  </div>
+
+</div>
+
 
       {/* Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-        <button
-          onClick={() => {
-            setShowCategoryForm(!showCategoryForm);
-            setShowItemForm(false);
-          }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
-        >
-          {showCategoryForm ? "Cancel" : "Add Category"}
-        </button>
+      {isAdmin && (
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
+          <button
+            onClick={() => {
+              setShowCategoryForm(!showCategoryForm);
+              setShowItemForm(false);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
+          >
+            {showCategoryForm ? "Cancel" : "Add Category"}
+          </button>
 
-        <button
-          onClick={() => {
-            setShowItemForm(!showItemForm);
-            setShowCategoryForm(false);
-          }}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg"
-        >
-          {showItemForm ? "Cancel" : "Add Menu Item"}
-        </button>
-      </div>
+          <button
+            onClick={() => {
+              setShowItemForm(!showItemForm);
+              setShowCategoryForm(false);
+            }}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg"
+          >
+            {showItemForm ? "Cancel" : "Add Menu Item"}
+          </button>
+        </div>
+      )}
+
 
       {/* Category Form */}
       <AnimatePresence>
@@ -280,18 +324,21 @@ const MenuPage = () => {
                 {section.category}
               </h2>
 
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                onClick={() =>
-                  handleRemoveCategory(
-                    section.categoryId,
-                    section.category
-                  )
-                }
-                className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
-              >
-                Delete Category
-              </motion.button>
+              {isAdmin && (
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() =>
+                    handleRemoveCategory(
+                      section.categoryId,
+                      section.category
+                    )
+                  }
+                  className="bg-red-100 text-red-700 px-4 py-2 rounded-lg"
+                >
+                  Delete Category
+                </motion.button>
+              )}
+
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -310,16 +357,19 @@ const MenuPage = () => {
                       ₹{Number(item.price).toFixed(2)}
                     </p>
 
-                    <motion.button
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() =>
-                        handleRemoveItem(itemId, item.name)
-                      }
-                      className="absolute top-3 right-3 bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition"
-                    >
-                      ✕
-                    </motion.button>
+                    {isAdmin && (
+                      <motion.button
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() =>
+                          handleRemoveItem(itemId, item.name)
+                        }
+                        className="absolute top-3 right-3 bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition"
+                      >
+                        ✕
+                      </motion.button>
+                    )}
+
                   </motion.div>
                 );
               })}

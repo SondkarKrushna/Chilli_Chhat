@@ -13,6 +13,9 @@ const HeroPage = () => {
     document.title = "Home Page | Restaurant Management System";
   }, []);
 
+  // Get role from localStorage
+  const role = localStorage.getItem("role");
+
   // Container animation (stagger effect)
   const container = {
     hidden: {},
@@ -94,23 +97,30 @@ const HeroPage = () => {
             variants={fadeUp}
             className="flex gap-4 max-sm:flex-col max-sm:w-full max-sm:items-center"
           >
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate("/waiter")}
-              className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg shadow-lg"
-            >
-              Take Order
-            </motion.button>
+            {/* Show Only For Waiter */}
+            {role === "waiter" && (
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/waiter")}
+                className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg shadow-lg transition"
+              >
+                Take Order
+              </motion.button>
+            )}
 
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate("/menu")}
-              className="border border-white px-6 py-3 rounded-lg hover:bg-white hover:text-black transition"
-            >
-              View Menu
-            </motion.button>
+            {/* View Menu Button (Visible to All) */}
+            {(role === "admin" || role === "waiter") && (
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/menu")}
+                className="border border-white px-6 py-3 rounded-lg hover:bg-white hover:text-black transition"
+              >
+                View Menu
+              </motion.button>
+            )}
+
           </motion.div>
 
           {/* Review Card */}

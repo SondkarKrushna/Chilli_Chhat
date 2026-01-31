@@ -18,27 +18,40 @@ const AdminPanel = () => {
       </div>
 
       {/* ACTION CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <Link
-          to="/book-table"
-          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition"
-        >
-          <h2 className="text-lg font-semibold mb-2">🍽️ Table Availability</h2>
-          <p className="text-sm text-gray-600">
-            Check, add or remove tables
-          </p>
-        </Link>
+      <div className="flex justify-center mt-12">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+    
+    <Link
+      to="/book-table"
+      className="w-56 h-56 bg-white rounded-2xl shadow-md 
+                 hover:shadow-xl hover:scale-105 
+                 transition-all duration-300 
+                 flex flex-col justify-center items-center text-center"
+    >
+      <span className="text-4xl mb-3">🍽️</span>
+      <h2 className="text-lg font-semibold">Table Availability</h2>
+      <p className="text-sm text-gray-500 mt-1">
+        Manage tables
+      </p>
+    </Link>
 
-        <Link
-          to="/menu"
-          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition"
-        >
-          <h2 className="text-lg font-semibold mb-2">📋 Menu Management</h2>
-          <p className="text-sm text-gray-600">
-            Add or remove menu items
-          </p>
-        </Link>
-      </div>
+    <Link
+      to="/menu"
+      className="w-56 h-56 bg-white rounded-2xl shadow-md 
+                 hover:shadow-xl hover:scale-105 
+                 transition-all duration-300 
+                 flex flex-col justify-center items-center text-center"
+    >
+      <span className="text-4xl mb-3">📋</span>
+      <h2 className="text-lg font-semibold">Menu Management</h2>
+      <p className="text-sm text-gray-500 mt-1">
+        Manage items
+      </p>
+    </Link>
+
+  </div>
+</div>
+
     </div>
   );
 };
