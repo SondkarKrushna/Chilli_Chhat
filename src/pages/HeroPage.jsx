@@ -1,40 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Offers from "../components/Offers";
+import Offers from "../components/Offers1";
+import Loader from "../components/Loader";
 import hero from "../../public/indianFood.jpg";
 import mobile from "../../public/mobile_indian_food.jpeg";
 import review from "../../public/review.png";
 
+// ✅ Move animations outside component (better performance)
+const container = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const fadeUp = {
+  hidden: { y: 40, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
 const HeroPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     document.title = "Home Page | Restaurant Management System";
+
+    // Loader for smooth entry
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // Get role from localStorage
   const role = localStorage.getItem("role");
 
-  // Container animation (stagger effect)
-  const container = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.3,
-      },
-    },
-  };
-
-  // Fade up animation
-  const fadeUp = {
-    hidden: { y: 40, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
+  // ✅ Show Loader First
+  if (loading) return <Loader />;
 
   return (
     <>
@@ -109,7 +119,7 @@ const HeroPage = () => {
               </motion.button>
             )}
 
-            {/* View Menu Button (Visible to All) */}
+            {/* View Menu Button */}
             {(role === "admin" || role === "waiter") && (
               <motion.button
                 whileHover={{ scale: 1.08 }}
@@ -120,7 +130,6 @@ const HeroPage = () => {
                 View Menu
               </motion.button>
             )}
-
           </motion.div>
 
           {/* Review Card */}
@@ -146,6 +155,9 @@ const HeroPage = () => {
                 className="object-contain w-2/3 mx-auto mb-3"
                 alt="Customer reviews"
               />
+              <h1 className="text-2xl font-semibold text-left mb-1 font-poppins">
+                Trusted By
+              </h1>
               <p className="text-lg text-center text-[#FFF6E5]">
                 Our 2600+ Happy Customers
               </p>
