@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Offers from "../components/Offers1";
+import Offers from "../components/Offers";
 import Loader from "../components/Loader";
 import hero from "../../public/indianFood.jpg";
 import mobile from "../../public/mobile_indian_food.jpeg";
